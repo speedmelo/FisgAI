@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Descomplic.AI - FisgAI Localiza&co</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen font-sans">
+    <!-- Header / Navbar -->
+    <header class="border-b border-emerald-500/20 bg-slate-950/80 backdrop-blur sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-emerald-500 flex items-center justify-center font-bold text-slate-950 text-xl shadow-lg shadow-emerald-500/30">
+                    ⚡
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold bg-gradient-to-r from-emerald-400 to-teal-200 bg-clip-text text-transparent">
+                        Descomplic.AI <span class="text-xs font-normal text-slate-400">| Talentos</span>
+                    </h1>
+                    <p class="text-xs text-emerald-400/80 font-medium">#VEMSERSANGUEVERDE • Localiza&co</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2 text-xs bg-slate-800/80 px-3 py-1.5 rounded-full border border-slate-700">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span class="text-slate-300">Engine Online</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-6 py-8">
+        <!-- Painel de Filtros da Localiza -->
+        <div class="bg-slate-800/50 border border-slate-700/60 rounded-2xl p-6 mb-8 shadow-xl">
+            <h2 class="text-lg font-semibold text-slate-200 mb-4 flex items-center gap-2">
+                <i class="fa-solid fa-filter text-emerald-400"></i> Parâmetros de Busca de Talentos
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Vaga -->
+                <div>
+                    <label class="block text-xs font-medium text-slate-400 mb-2">Vaga SPA Localiza</label>
+                    <select id="jobTarget" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-slate-200 focus:outline-none focus:border-emerald-500 transition">
+                        <option value="Todas as Vagas SPA (Atendimento, Auxiliar, Higienização)">Todas as Vagas SPA (Atendimento, Auxiliar, Higienização)</option>
+                        <option value="Atendimento ao Cliente">Atendimento ao Cliente</option>
+                        <option value="Auxiliar de Operações">Auxiliar de Operações</option>
+                        <option value="Agente de Higienização">Agente de Higienização</option>
+                    </select>
+                </div>
+
+                <!-- Região SP -->
+                <div>
+                    <label class="block text-xs font-medium text-slate-400 mb-2">Região de Atuação (SP)</label>
+                    <select id="location" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-slate-200 focus:outline-none focus:border-emerald-500 transition">
+                        <option value="São Paulo - SP">São Paulo - Capital</option>
+                        <option value="Grande São Paulo - SP">Grande São Paulo</option>
+                        <option value="Guarulhos - SP">Guarulhos</option>
+                        <option value="Litoral - SP">Litoral SP</option>
+                    </select>
+                </div>
+
+                <!-- Botão Ação -->
+                <div class="flex items-end">
+                    <button onclick="executeSearch()" id="btnSearch" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold py-3 px-6 rounded-xl transition flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 active:scale-98">
+                        <i class="fa-solid fa-magnifying-glass"></i> Fisgar Talentos Agora
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Header da Lista de Resultados -->
+        <div class="flex justify-between items-center mb-6">
+            <h3 class="text-xl font-bold text-slate-100 flex items-center gap-2">
+                <i class="fa-solid fa-users-viewfinder text-emerald-400"></i>
+                Candidatos Qualificados
+            </h3>
+            <span id="resultsCount" class="text-xs text-slate-400 bg-slate-800 px-3 py-1 rounded-lg">0 encontrando(s)</span>
+        </div>
+
+        <!-- Cards Grid -->
+        <div id="candidatesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="col-span-full bg-slate-800/20 border border-dashed border-slate-700 rounded-2xl p-12 text-center">
+                <i class="fa-solid fa-radar text-4xl text-slate-600 mb-3 animate-spin"></i>
+                <p class="text-slate-400 font-medium">Selecione os parâmetros acima e clique em "Fisgar Talentos".</p>
+                <p class="text-xs text-slate-500 mt-1">O motor do FisgAI vai varrer as bases do LinkedIn, Catho e validar requisitos de CNH.</p>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        async function executeSearch() {
+            const btn = document.getElementById('btnSearch');
+            const grid = document.getElementById('candidatesGrid');
+            const countLabel = document.getElementById('resultsCount');
+
+            const jobTarget = document.getElementById('jobTarget').value;
+            const location = document.getElementById('location').value;
+
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-circle-notch animate-spin"></i> Buscando na Web...`;
+            grid.innerHTML = `
+                <div class="col-span-full py-16 text-center">
+                    <div class="inline-block p-4 rounded-full bg-emerald-500/10 text-emerald-400 mb-4 animate-bounce">
+                        <i class="fa-solid fa-microchip text-3xl"></i>
+                    </div>
+                    <h4 class="text-lg font-semibold text-slate-200">Varrendo bancos de currículos em ${location}...</h4>
+                    <p class="text-xs text-slate-400 mt-1">Aplicando inteligência do Gemini Flash para score e validação de CNH.</p>
+                </div>
+            `;
+
+            try {
+                // APONTA PARA A SUA API LOCALIZADA NO FASTAPI
+                const response = await fetch('http://127.0.0.1:8000/run-search', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        job_target: jobTarget,
+                        location: location,
+                        cnh_required: true,
+                        max_results: 3
+                    })
+                });
+
+                const data = await response.json();
+                grid.innerHTML = '';
+                countLabel.innerText = `${data.candidates.length} candidato(s) qualificado(s)`;
+
+                if (!data.candidates || data.candidates.length === 0) {
+                    grid.innerHTML = `<p class="col-span-full text-center text-slate-400">Nenhum perfil encontrado nesta combinação.</p>`;
+                    return;
+                }
+
+                data.candidates.forEach(candidate => {
+                    const card = `
+                        <div class="bg-slate-800/80 border border-slate-700/80 rounded-2xl p-6 shadow-xl hover:border-emerald-500/50 transition flex flex-col justify-between">
+                            <div>
+                                <div class="flex justify-between items-start mb-3">
+                                    <span class="text-[10px] uppercase tracking-wider font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2.5 py-1 rounded-md">
+                                        Score: ${candidate.score}/10
+                                    </span>
+                                    <span class="text-[11px] bg-slate-700 text-slate-300 px-2 py-0.5 rounded flex items-center gap-1">
+                                        <i class="fa-solid fa-id-card text-emerald-400"></i> CNH OK
+                                    </span>
+                                </div>
+                                <h4 class="text-base font-bold text-slate-100 mb-1 line-clamp-1">${candidate.name_or_snippet}</h4>
+                                <p class="text-xs text-emerald-400 font-medium mb-3">${candidate.job_target}</p>
+                                <p class="text-xs text-slate-400 leading-relaxed mb-4">
+                                    <i class="fa-solid fa-location-dot text-slate-500 mr-1"></i> ${candidate.location}
+                                </p>
+                            </div>
+                            <div class="pt-4 border-t border-slate-700/60 flex gap-2">
+                                <a href="${candidate.whatsapp_link}" target="_blank" class="flex-1 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-center text-xs font-semibold py-2.5 rounded-xl transition flex items-center justify-center gap-1.5">
+                                    <i class="fa-solid fa-arrow-up-right-from-square"></i> Ver Perfil Completo
+                                </a>
+                            </div>
+                        </div>
+                    `;
+                    grid.innerHTML += card;
+                });
+
+            } catch (error) {
+                grid.innerHTML = `<p class="col-span-full text-center text-rose-400">Erro ao consultar backend. Verifique se o servidor FastAPI está rodando.</p>`;
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = `<i class="fa-solid fa-magnifying-glass"></i> Fisgar Talentos Agora`;
+            }
+        }
+    </script>
+</body>
+</html>
