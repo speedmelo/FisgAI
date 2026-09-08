@@ -40,7 +40,7 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <!-- Vaga -->
                 <div>
-                    <label class="block text-xs font-medium text-slate-400 mb-2">Vaga SPA Localiza</label>
+                    <label for="jobTarget" class="block text-xs font-medium text-slate-400 mb-2">Vaga SPA Localiza</label>
                     <select id="jobTarget" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-slate-200 focus:outline-none focus:border-emerald-500 transition">
                         <option value="Todas as Vagas SPA (Atendimento, Auxiliar, Higienização)">Todas as Vagas SPA (Atendimento, Auxiliar, Higienização)</option>
                         <option value="Atendimento ao Cliente">Atendimento ao Cliente</option>
@@ -51,7 +51,7 @@
 
                 <!-- Região SP -->
                 <div>
-                    <label class="block text-xs font-medium text-slate-400 mb-2">Região de Atuação (SP)</label>
+                    <label for="location" class="block text-xs font-medium text-slate-400 mb-2">Região de Atuação (SP)</label>
                     <select id="location" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-slate-200 focus:outline-none focus:border-emerald-500 transition">
                         <option value="São Paulo - SP">São Paulo - Capital</option>
                         <option value="Grande São Paulo - SP">Grande São Paulo</option>
@@ -62,7 +62,7 @@
 
                 <!-- Botão Ação -->
                 <div class="flex items-end">
-                    <button onclick="executeSearch()" id="btnSearch" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold py-3 px-6 rounded-xl transition flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 active:scale-98">
+                    <button onclick="executeSearch()" id="btnSearch" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold py-3 px-6 rounded-xl transition flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 active:scale-98 cursor-pointer">
                         <i class="fa-solid fa-magnifying-glass"></i> Fisgar Talentos Agora
                     </button>
                 </div>
@@ -75,7 +75,7 @@
                 <i class="fa-solid fa-users-viewfinder text-emerald-400"></i>
                 Candidatos Qualificados
             </h3>
-            <span id="resultsCount" class="text-xs text-slate-400 bg-slate-800 px-3 py-1 rounded-lg">0 encontrando(s)</span>
+            <span id="resultsCount" class="text-xs text-slate-400 bg-slate-800 px-3 py-1 rounded-lg">0 encontrado(s)</span>
         </div>
 
         <!-- Cards Grid -->
@@ -104,14 +104,18 @@
                     <div class="inline-block p-4 rounded-full bg-emerald-500/10 text-emerald-400 mb-4 animate-bounce">
                         <i class="fa-solid fa-microchip text-3xl"></i>
                     </div>
-                    <h4 class="text-lg font-semibold text-slate-200">Varrendo bancos de currículos em ${location}...</h4>
+                    <h4 class="text-lg font-semibold text-slate-200">Varrendo bases em ${location}...</h4>
                     <p class="text-xs text-slate-400 mt-1">Aplicando inteligência do Gemini Flash para score e validação de CNH.</p>
                 </div>
             `;
 
             try {
-                // APONTA PARA A SUA API LOCALIZADA NO FASTAPI
-                const response = await fetch('http://127.0.0.1:8000/run-search', {
+                // DETECÇÃO AUTOMÁTICA INTELIGENTE DE URL
+                const API_URL = window.location.hostname.includes('onrender.com') 
+                    ? window.location.origin 
+                    : 'http://127.0.0.1:8000';
+
+                const response = await fetch(`${API_URL}/run-search`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -160,7 +164,7 @@
                 });
 
             } catch (error) {
-                grid.innerHTML = `<p class="col-span-full text-center text-rose-400">Erro ao consultar backend. Verifique se o servidor FastAPI está rodando.</p>`;
+                grid.innerHTML = `<p class="col-span-full text-center text-rose-400">Erro ao consultar backend no Render. Tente novamente em instantes.</p>`;
             } finally {
                 btn.disabled = false;
                 btn.innerHTML = `<i class="fa-solid fa-magnifying-glass"></i> Fisgar Talentos Agora`;
