@@ -25,7 +25,7 @@ class SPRegions(str, Enum):
     LITORAL_SP = "Litoral - SP"
 
 
-# Modelo Automatizado Padrão Localiza SP
+# Modelo Automatizado Padrão Localiza SP (Permite buscar até 12 candidatos)
 class SearchRequest(BaseModel):
     job_target: LocalizaJobs = Field(
         default=LocalizaJobs.TODAS_SPA,
@@ -40,11 +40,11 @@ class SearchRequest(BaseModel):
         description="Requisito Obrigatório: CNH definitiva há pelo menos 1 ano",
     )
     max_results: int = Field(
-        default=3,
+        default=6,
         ge=1,
-        le=10,
+        le=12,
         description="Quantidade de candidatos a buscar por execução",
-        examples=[3],
+        examples=[6],
     )
 
 
