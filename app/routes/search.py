@@ -25,7 +25,7 @@ class SPRegions(str, Enum):
     LITORAL_SP = "Litoral - SP"
 
 
-# Modelo Automatizado Padrão Localiza SP (Permite buscar até 12 candidatos)
+# Modelo Automatizado Padrão Localiza SP (Limitado a 10 por requisição da Serper API)
 class SearchRequest(BaseModel):
     job_target: LocalizaJobs = Field(
         default=LocalizaJobs.TODAS_SPA,
@@ -42,8 +42,8 @@ class SearchRequest(BaseModel):
     max_results: int = Field(
         default=6,
         ge=1,
-        le=12,
-        description="Quantidade de candidatos a buscar por execução",
+        le=10,
+        description="Quantidade de candidatos a buscar por execução (Máx 10)",
         examples=[6],
     )
 
@@ -71,7 +71,6 @@ class SearchResponse(BaseModel):
 
 @router.post("/run-search", response_model=SearchResponse)
 async def run_search(request: SearchRequest):
-    # Trata a consulta caso seja a busca combinada
     if request.job_target == LocalizaJobs.TODAS_SPA:
         query_job = "Atendimento ao Cliente OR Auxiliar de Operações OR Agente de Higienização"
         display_job = "Vagas SPA (Atendimento / Auxiliar / Higienização)"
@@ -89,7 +88,8 @@ async def run_search(request: SearchRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
     candidates = []
-    for idx, item in enumerate(raw_results, start=1):
+    # Proteção caso a API retorne menos itens que o solicitado
+    for idx, item in enumerate(raw_results or [], start=1):
         title_raw = item.get("title", "Candidato Localiza")
         clean_name = title_raw.split("-")[0].replace("|", "").strip()
         link = item.get("link", "#")
@@ -111,7 +111,7 @@ async def run_search(request: SearchRequest):
         )
         candidates.append(candidate_obj)
 
-        # Card de Notificação Telegram Localiza SP
+        # Disparo assíncrono para o Telegram
         card_telegram = (
             f"🚗 <b>FisgAI Engine | Localiza&co SP</b>\n"
             f"<i>#VEMSERSANGUEVERDE</i> 💚\n\n"
