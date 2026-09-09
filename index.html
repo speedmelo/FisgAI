@@ -135,10 +135,8 @@
                 }
 
                 data.candidates.forEach(candidate => {
-                    // Número fixo do WhatsApp Business da Michele: +55 31 3076-1266 -> 553130761266
                     const micheleWhatsApp = "553130761266";
                     
-                    // Mensagem pronta para o candidato ou para a campanha disparar para a Michele
                     const campanhaMsg = encodeURIComponent(
                         `Olá Michele! Vi a oportunidade da vaga de *${candidate.job_target}* em *${candidate.location}* (#VEMSERSANGUEVERDE) e tenho interesse em participar do processo seletivo da Localiza&co. Segue o link de referência: ${candidate.whatsapp_link}`
                     );
@@ -162,7 +160,7 @@
                                 </p>
                             </div>
                             <div class="pt-4 border-t border-slate-700/60 flex flex-col gap-2">
-                                <a href="${whatsappCampanhaLink}" target="_blank" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-center text-xs font-bold py-3 rounded-xl transition flex items-center justify-center gap-1.5 shadow-md">
+                                <a href="${whatsappCampanhaLink}" target="_blank" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-center text-xs font-bold py-3 rounded-xl transition flex items-center justify-center gap-2 shadow-md">
                                     <i class="fa-brands fa-whatsapp text-sm"></i> Disparar Campanha WhatsApp (+55 31 3076-1266)
                                 </a>
                                 <a href="${candidate.whatsapp_link}" target="_blank" class="w-full bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-700 text-center text-xs font-semibold py-2 rounded-xl transition flex items-center justify-center gap-1">
