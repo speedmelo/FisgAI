@@ -15,15 +15,20 @@ async def search_professional_profiles(
 
     url = "https://google.serper.dev/search"
 
-    keywords_pool = ["currículo", "experiência", "profissional", "trabalho", "perfil", "candidato"]
+    # Pool de termos para buscar currículos e pessoas reais na web aberta
+    keywords_pool = [
+        "currículo", "experiência", "profissional", "candidato", "trabalho em são paulo", "perfil profissional"
+    ]
     random_keyword = random.choice(keywords_pool)
 
+    # Query ultra focada: Gupy Oficial da Localiza + Buscas de pessoas reais/currículos na web (sem linkedin)
     query = (
+        f'(site:localiza.gupy.io OR "currículo" OR "perfil") '
         f'("{job_target}") '
         f'("{location}") '
         f'("CNH" OR "Habilitado" OR "Motorista") '
         f'("{random_keyword}") '
-        f'(-site:gupy.io -site:vagas.com.br)'
+        f'(-site:linkedin.com)'  # Garante exclusão total do LinkedIn
     )
 
     headers = {
@@ -31,7 +36,8 @@ async def search_professional_profiles(
         "Content-Type": "application/json",
     }
     
-    payload = {"q": query, "num": max(num_results + 4, 10)}
+    # Pede um volume robusto para a API para termos bastante margem
+    payload = {"q": query, "num": max(num_results + 6, 12)}
 
     try:
         async with httpx.AsyncClient(timeout=15.0) as client:
@@ -39,8 +45,10 @@ async def search_professional_profiles(
             resp.raise_for_status()
             data = resp.json()
             organic_results = data.get("organic", [])
+            
+            # Embaralha para trazer variedade a cada execução
             random.shuffle(organic_results)
             return organic_results[:num_results]
             
     except Exception as e:
-        raise SearchServiceError(f"Erro na busca Serper: {str(e)}")
+        raise SearchServiceError(f"Erro na busca Gupy/Web: {str(e)}")
