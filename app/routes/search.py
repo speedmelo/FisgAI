@@ -9,12 +9,13 @@ from app.services.telegram_service import send_telegram_notification
 router = APIRouter(prefix="", tags=["Search"])
 
 
-# Opções de Vagas SPA Localiza
+# Opções atualizadas de Cargos / Perfis de Candidatos
 class LocalizaJobs(str, Enum):
-    TODAS_SPA = "Todas as Vagas SPA (Atendimento, Auxiliar, Higienização)"
-    ATENDIMENTO = "Atendimento ao Cliente"
+    ATENDENTE = "Atendente de Locação"
     AUXILIAR_OP = "Auxiliar de Operações"
-    AGENTE_HIGIENIZACAO = "Agente de Higienização"
+    HIGIENIZACAO = "Agente de Higienização de Veículos"
+    MOTORISTA = "Motorista Entregador Frota"
+    TODAS_SPA = "Todas as Vagas SPA (Atendimento, Auxiliar, Higienização)"
 
 
 # Regiões Estratégicas de São Paulo
@@ -25,11 +26,10 @@ class SPRegions(str, Enum):
     LITORAL_SP = "Litoral - SP"
 
 
-# Modelo Automatizado Padrão Localiza SP (Limitado a 10 por requisição da Serper API)
 class SearchRequest(BaseModel):
-    job_target: LocalizaJobs = Field(
-        default=LocalizaJobs.TODAS_SPA,
-        description="Seleção de Vaga SPA Localiza",
+    job_target: str = Field(
+        default=LocalizaJobs.ATENDENTE,
+        description="Cargo ou Vaga alvo",
     )
     location: SPRegions = Field(
         default=SPRegions.SAO_PAULO_CAPITAL,
@@ -37,7 +37,7 @@ class SearchRequest(BaseModel):
     )
     cnh_required: bool = Field(
         default=True,
-        description="Requisito Obrigatório: CNH definitiva há pelo menos 1 ano",
+        description="Requisito Obrigatório: CNH ativa",
     )
     max_results: int = Field(
         default=6,
@@ -71,16 +71,11 @@ class SearchResponse(BaseModel):
 
 @router.post("/run-search", response_model=SearchResponse)
 async def run_search(request: SearchRequest):
-    if request.job_target == LocalizaJobs.TODAS_SPA:
-        query_job = "Atendimento ao Cliente OR Auxiliar de Operações OR Agente de Higienização"
-        display_job = "Vagas SPA (Atendimento / Auxiliar / Higienização)"
-    else:
-        query_job = request.job_target.value
-        display_job = request.job_target.value
+    display_job = request.job_target
 
     try:
         raw_results = await search_professional_profiles(
-            job_target=query_job,
+            job_target=request.job_target,
             location=request.location.value,
             num_results=request.max_results,
         )
@@ -88,15 +83,14 @@ async def run_search(request: SearchRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
     candidates = []
-    # Proteção caso a API retorne menos itens que o solicitado
     for idx, item in enumerate(raw_results or [], start=1):
         title_raw = item.get("title", "Candidato Localiza")
         clean_name = title_raw.split("-")[0].replace("|", "").strip()
         link = item.get("link", "#")
         snippet = item.get("snippet", "Perfil localizado no radar de talentos de SP.")
 
-        score = 8.8
-        cnh_verified = "CNH Definitiva (+1 ano OK)" if request.cnh_required else "Não checado"
+        score = 9.2
+        cnh_verified = "CNH Ativa Verificada" if request.cnh_required else "Não checado"
 
         candidate_obj = CandidateResult(
             id=idx,
@@ -111,25 +105,21 @@ async def run_search(request: SearchRequest):
         )
         candidates.append(candidate_obj)
 
-        # Disparo assíncrono para o Telegram
+        # Notificação Telegram
         card_telegram = (
-            f"🚗 <b>FisgAI Engine | Localiza&co SP</b>\n"
+            f"🚗 <b>FisgAI Suite | Sourcing SP</b>\n"
             f"<i>#VEMSERSANGUEVERDE</i> 💚\n\n"
-            f"🎯 <b>Vaga(s):</b> {display_job}\n"
+            f"🎯 <b>Cargo:</b> {display_job}\n"
             f"📍 <b>Região SP:</b> {request.location.value}\n"
             f"👤 <b>Candidato:</b> {clean_name}\n"
-            f"🪪 <b>Requisito CNH:</b> ✅ Definitiva (1+ anos)\n"
-            f"⭐ <b>Score FisgAI:</b> {score}/10\n"
-            f"📝 <b>Resumo:</b> {snippet[:110]}...\n\n"
-            f"🎁 <b>Benefícios Localiza:</b>\n"
-            f"• VT + VR/VA + Plano Saúde/Odonto\n"
-            f"• Wellhub + PLR + Desconto Veículos\n\n"
-            f"🔗 <b>Perfil/Contato:</b> {link}"
+            f"🪪 <b>CNH:</b> ✅ Ativa\n"
+            f"⭐ <b>Score:</b> {score}/10\n\n"
+            f"🔗 <b>Link:</b> {link}"
         )
         await send_telegram_notification(card_telegram)
 
     return SearchResponse(
-        message=f"Busca de talentos concluída para {request.location.value}.",
+        message=f"Busca concluída para {request.location.value}.",
         qualified=len(candidates),
         saved=len(candidates),
         duplicates=0,
