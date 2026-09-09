@@ -25,9 +25,9 @@ async def search_professional_profiles(
     # Seleciona os termos expandidos ou utiliza a busca direta
     expanded_terms = variations_map.get(job_target, f'"{job_target}"')
 
-    # Query Boolean Avançada: (LinkedIn OR Catho) + Variações + Região + Requisito CNH
+    # Query Avançada Integrando Gupy Oficial + LinkedIn/Catho + Região + CNH
     query = (
-        f'(site:linkedin.com/in/ OR site:catho.com.br/profissionais) '
+        f'(site:localiza.gupy.io OR site:linkedin.com/in/ OR site:catho.com.br/profissionais) '
         f'{expanded_terms} '
         f'"{location}" '
         f'("CNH" OR "CNH B" OR "Carteira de Habilitação")'
@@ -46,4 +46,4 @@ async def search_professional_profiles(
             data = resp.json()
             return data.get("organic", [])
     except Exception as e:
-        raise SearchServiceError(f"Erro na busca expandida Serper: {str(e)}")
+        raise SearchServiceError(f"Erro na busca expandida Gupy/Serper: {str(e)}")
