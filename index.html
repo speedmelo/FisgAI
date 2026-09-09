@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Descomplic.AI - FisgAI Localiza&co | Outbound</title>
+    <title>Descomplic.AI - FisgAI Localiza&co | Efeito Mariposa & 10 Leads</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
@@ -17,24 +17,51 @@
                 </div>
                 <div>
                     <h1 class="text-xl font-bold bg-gradient-to-r from-emerald-400 to-teal-200 bg-clip-text text-transparent">
-                        Descomplic.AI <span class="text-xs font-normal text-slate-400">| Outbound & Campanhas</span>
+                        Descomplic.AI <span class="text-xs font-normal text-slate-400">| Sourcing Ativo (10 Leads)</span>
                     </h1>
                     <p class="text-xs text-emerald-400/80 font-medium">#VEMSERSANGUEVERDE • WhatsApp Michele: +55 31 3076-1266</p>
                 </div>
             </div>
             <div class="flex items-center gap-2 text-xs bg-slate-800/80 px-3 py-1.5 rounded-full border border-slate-700">
                 <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                <span class="text-slate-300">Engine Outbound Online</span>
+                <span class="text-slate-300">Pacote Ativo: 10 Leads/Busca</span>
             </div>
         </div>
     </header>
 
     <!-- Main Content -->
     <main class="max-w-7xl mx-auto px-6 py-8">
+        
+        <!-- Bloco: Gerador de Posts Magnéticos (Efeito Mariposa) -->
+        <div class="bg-gradient-to-r from-emerald-950/40 via-slate-800/60 to-slate-800/60 border border-emerald-500/30 rounded-2xl p-6 mb-8 shadow-2xl relative overflow-hidden">
+            <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none"></div>
+            <h2 class="text-base font-bold text-emerald-400 mb-2 flex items-center gap-2">
+                <i class="fa-solid fa-wand-magic-sparkles"></i> Gerador de Copy Virais para a Web (Atração Mariposa)
+            </h2>
+            <p class="text-xs text-slate-300 mb-4">Gere posts prontos otimizados para disparar em redes sociais e grupos, atraindo os candidatos direto para o WhatsApp da Michele.</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
+                <div class="md:col-span-8">
+                    <textarea id="viralCopyBox" rows="3" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-xs text-slate-200 focus:outline-none focus:border-emerald-500 font-mono shadow-inner" readonly>🚀 VAGA LOCALIZA&CO EM SÃO PAULO! (#VEMSERSANGUEVERDE) 💚
+Estamos recrutando talentos com CNH para oportunidades de Atendimento, Operações e Higienização! 
+🎁 Benefícios completos (VR, VT, Wellhub, PLR e muito mais).
+📲 Garanta sua vaga direto com nossa recrutadora no WhatsApp: https://wa.me/553130761266?text=Olá!%20Vi%20a%20vaga%20da%20Localiza%20na%20web%20e%20tenho%20interesse!</textarea>
+                </div>
+                <div class="md:col-span-4 flex flex-col gap-2">
+                    <button onclick="copyViralCopy()" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold py-3 px-4 rounded-xl text-xs transition flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 cursor-pointer">
+                        <i class="fa-regular fa-copy"></i> Copiar Copy Magnética
+                    </button>
+                    <a href="https://wa.me/553130761266?text=Olá%20Michele!%20Iniciando%20campanha%20de%20Atração%20Mariposa." target="_blank" class="w-full bg-slate-900 hover:bg-slate-800 text-emerald-400 border border-emerald-500/30 text-center font-semibold py-2.5 px-4 rounded-xl text-xs transition flex items-center justify-center gap-2">
+                        <i class="fa-brands fa-whatsapp"></i> Testar Canal da Michele
+                    </a>
+                </div>
+            </div>
+        </div>
+
         <!-- Painel de Filtros e Disparo -->
         <div class="bg-slate-800/50 border border-slate-700/60 rounded-2xl p-6 mb-8 shadow-xl">
             <h2 class="text-lg font-semibold text-slate-200 mb-4 flex items-center gap-2">
-                <i class="fa-solid fa-bullhorn text-emerald-400"></i> Parâmetros de Disparo e Captação Web
+                <i class="fa-solid fa-bullhorn text-emerald-400"></i> Parâmetros de Disparo e Captação Web (10 Leads)
             </h2>
             
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -63,7 +90,7 @@
                 <!-- Botão Ação -->
                 <div class="flex items-end">
                     <button onclick="executeSearch()" id="btnSearch" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold py-3 px-6 rounded-xl transition flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 active:scale-98 cursor-pointer">
-                        <i class="fa-solid fa-rocket"></i> Gerar Leads & Campanhas
+                        <i class="fa-solid fa-rocket"></i> Gerar 10 Leads & Campanhas
                     </button>
                 </div>
             </div>
@@ -82,13 +109,20 @@
         <div id="candidatesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <div class="col-span-full bg-slate-800/20 border border-dashed border-slate-700 rounded-2xl p-12 text-center">
                 <i class="fa-solid fa-radar text-4xl text-slate-600 mb-3 animate-spin"></i>
-                <p class="text-slate-400 font-medium">Selecione os parâmetros e clique em "Gerar Leads & Campanhas".</p>
+                <p class="text-slate-400 font-medium">Selecione os parâmetros e clique em "Gerar 10 Leads & Campanhas".</p>
                 <p class="text-xs text-slate-500 mt-1">A engine mapeará a web para gerar os links de direcionamento direto ao WhatsApp da Michele.</p>
             </div>
         </div>
     </main>
 
     <script>
+        function copyViralCopy() {
+            const box = document.getElementById('viralCopyBox');
+            box.select();
+            navigator.clipboard.writeText(box.value);
+            alert('Copy Magnética copiada com sucesso! Cole em grupos, redes sociais e portais para atrair candidatos.');
+        }
+
         async function executeSearch() {
             const btn = document.getElementById('btnSearch');
             const grid = document.getElementById('candidatesGrid');
@@ -98,13 +132,13 @@
             const location = document.getElementById('location').value;
 
             btn.disabled = true;
-            btn.innerHTML = `<i class="fa-solid fa-circle-notch animate-spin"></i> Mapeando Web...`;
+            btn.innerHTML = `<i class="fa-solid fa-circle-notch animate-spin"></i> Mapeando 10 Leads...`;
             grid.innerHTML = `
                 <div class="col-span-full py-16 text-center">
                     <div class="inline-block p-4 rounded-full bg-emerald-500/10 text-emerald-400 mb-4 animate-bounce">
                         <i class="fa-solid fa-microchip text-3xl"></i>
                     </div>
-                    <h4 class="text-lg font-semibold text-slate-200">Varrendo web e gerando links de campanha em ${location}...</h4>
+                    <h4 class="text-lg font-semibold text-slate-200">Varrendo web e gerando 10 leads em ${location}...</h4>
                     <p class="text-xs text-slate-400 mt-1">Preparando funil de captação para o WhatsApp Business da Michele (+55 31 3076-1266).</p>
                 </div>
             `;
@@ -121,7 +155,7 @@
                         job_target: jobTarget,
                         location: location,
                         cnh_required: true,
-                        max_results: 6
+                        max_results: 10
                     })
                 });
 
@@ -176,7 +210,7 @@
                 grid.innerHTML = `<p class="col-span-full text-center text-rose-400">Erro ao consultar backend no Render. Tente novamente em instantes.</p>`;
             } finally {
                 btn.disabled = false;
-                btn.innerHTML = `<i class="fa-solid fa-rocket"></i> Gerar Leads & Campanhas`;
+                btn.innerHTML = `<i class="fa-solid fa-rocket"></i> Gerar 10 Leads & Campanhas`;
             }
         }
     </script>

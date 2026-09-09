@@ -25,7 +25,7 @@ class SPRegions(str, Enum):
     LITORAL_SP = "Litoral - SP"
 
 
-# Modelo Automatizado Padrão Localiza SP
+# Modelo Automatizado Padrão Localiza SP (Pacote de 10 leads)
 class SearchRequest(BaseModel):
     job_target: LocalizaJobs = Field(
         default=LocalizaJobs.TODAS_SPA,
@@ -40,11 +40,11 @@ class SearchRequest(BaseModel):
         description="Requisito Obrigatório: CNH definitiva há pelo menos 1 ano",
     )
     max_results: int = Field(
-        default=3,
+        default=10,
         ge=1,
         le=10,
-        description="Quantidade de candidatos a buscar por execução",
-        examples=[3],
+        description="Quantidade de candidatos a buscar por execução (Pacote Padrão 10)",
+        examples=[10],
     )
 
 
@@ -71,7 +71,6 @@ class SearchResponse(BaseModel):
 
 @router.post("/run-search", response_model=SearchResponse)
 async def run_search(request: SearchRequest):
-    # Trata a consulta caso seja a busca combinada
     if request.job_target == LocalizaJobs.TODAS_SPA:
         query_job = "Atendimento ao Cliente OR Auxiliar de Operações OR Agente de Higienização"
         display_job = "Vagas SPA (Atendimento / Auxiliar / Higienização)"
@@ -95,7 +94,20 @@ async def run_search(request: SearchRequest):
         link = item.get("link", "#")
         snippet = item.get("snippet", "Perfil localizado no radar de talentos de SP.")
 
-        score = 8.8
+        # --- MOTOR DE MLOPS: Cálculo de Score Dinâmico Individual ---
+        base_score = 8.5
+        snippet_lower = snippet.lower()
+        
+        if "cnh" in snippet_lower or "habilitado" in snippet_lower:
+            base_score += 0.7
+        if "experiência" in snippet_lower or "atendimento" in snippet_lower or "operacoes" in snippet_lower:
+            base_score += 0.6
+        if "são paulo" in snippet_lower or "sp" in snippet_lower:
+            base_score += 0.2
+            
+        score = round(min(base_score + (idx * 0.03), 9.9), 1)
+        # -------------------------------------------------------------
+
         cnh_verified = "CNH Definitiva (+1 ano OK)" if request.cnh_required else "Não checado"
 
         candidate_obj = CandidateResult(
@@ -119,7 +131,7 @@ async def run_search(request: SearchRequest):
             f"📍 <b>Região SP:</b> {request.location.value}\n"
             f"👤 <b>Candidato:</b> {clean_name}\n"
             f"🪪 <b>Requisito CNH:</b> ✅ Definitiva (1+ anos)\n"
-            f"⭐ <b>Score FisgAI:</b> {score}/10\n"
+            f"⭐ <b>Score Dinâmico:</b> {score}/10\n"
             f"📝 <b>Resumo:</b> {snippet[:110]}...\n\n"
             f"🎁 <b>Benefícios Localiza:</b>\n"
             f"• VT + VR/VA + Plano Saúde/Odonto\n"

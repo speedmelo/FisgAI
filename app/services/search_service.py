@@ -1,4 +1,5 @@
 import httpx
+import random
 from app.core.config import settings
 
 
@@ -14,36 +15,39 @@ async def search_professional_profiles(
 
     url = "https://google.serper.dev/search"
 
-    # Mapeamento de variações e sinônimos operacionais da Localiza&co
-    variations_map = {
-        "Atendimento ao Cliente": '("Atendimento ao Cliente" OR "Agente de Atendimento" OR "Recepcionista" OR "Consultor de Atendimento")',
-        "Auxiliar de Operações": '("Auxiliar de Operações" OR "Auxiliar de Pátio" OR "Agente de Pátio" OR "Manobrista" OR "Auxiliar de Logística")',
-        "Agente de Higienização": '("Agente de Higienização" OR "Higienizador Automotivo" OR "Lavador de Veículos" OR "Preparador de Frota")',
-        "Atendimento ao Cliente OR Auxiliar de Operações OR Agente de Higienização": '(Atendimento OR "Auxiliar de Operações" OR "Auxiliar de Pátio" OR Higienização OR Manobrista OR "Higienizador Automotivo")',
-    }
+    # Pool de termos aleatórios para garantir variabilidade e encontrar pessoas reais diferentes a cada busca
+    keywords_pool = [
+        "currículo", "experiência", "profissional", "trabalho", "perfil", "candidato", "contratação"
+    ]
+    random_keyword = random.choice(keywords_pool)
 
-    # Seleciona os termos expandidos ou utiliza a busca direta
-    expanded_terms = variations_map.get(job_target, f'"{job_target}"')
-
-    # Query Avançada Integrando Gupy Oficial + LinkedIn/Catho + Região + CNH
+    # Query otimizada para buscar pessoas reais e currículos variados na web
     query = (
-        f'(site:localiza.gupy.io OR site:linkedin.com/in/ OR site:catho.com.br/profissionais) '
-        f'{expanded_terms} '
-        f'"{location}" '
-        f'("CNH" OR "CNH B" OR "Carteira de Habilitação")'
+        f'("{job_target}") '
+        f'("{location}") '
+        f'("CNH" OR "Habilitado" OR "Motorista") '
+        f'("{random_keyword}") '
+        f'(-site:gupy.io -site:vagas.com.br)'
     )
 
     headers = {
         "X-API-KEY": settings.SERPER_API_KEY,
         "Content-Type": "application/json",
     }
-    payload = {"q": query, "num": num_results}
+    
+    # Pede um volume maior para garantir que o filtro e o embaralhamento tragam novidade
+    payload = {"q": query, "num": max(num_results + 6, 12)}
 
     try:
         async with httpx.AsyncClient(timeout=15.0) as client:
             resp = await client.post(url, json=payload, headers=headers)
             resp.raise_for_status()
             data = resp.json()
-            return data.get("organic", [])
+            organic_results = data.get("organic", [])
+            
+            # Embaralha os resultados para evitar que venham sempre na mesma ordem engessada
+            random.shuffle(organic_results)
+            return organic_results[:num_results]
+            
     except Exception as e:
-        raise SearchServiceError(f"Erro na busca expandida Gupy/Serper: {str(e)}")
+        raise SearchServiceError(f"Erro na busca de pessoas reais: {str(e)}")
