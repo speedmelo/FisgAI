@@ -1,4 +1,4 @@
-from enum import Enum
+import traceback
 from typing import List, Optional
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
@@ -7,20 +7,6 @@ from app.services.search_service import SearchServiceError, search_professional_
 from app.services.telegram_service import send_telegram_notification
 
 router = APIRouter(prefix="", tags=["Search"])
-
-
-class LocalizaJobs(str, Enum):
-    TODAS_SPA = "Todas as Vagas SPA (Atendimento, Auxiliar, Higienização)"
-    ATENDIMENTO = "Atendimento ao Cliente"
-    AUXILIAR_OP = "Auxiliar de Operações"
-    AGENTE_HIGIENIZACAO = "Agente de Higienização"
-
-
-class SPRegions(str, Enum):
-    SAO_PAULO_CAPITAL = "São Paulo - SP"
-    GRANDE_SP = "Grande São Paulo - SP"
-    GUARULHOS = "Guarulhos - SP"
-    LITORAL_SP = "Litoral - SP"
 
 
 class SearchRequest(BaseModel):
@@ -54,7 +40,6 @@ class SearchResponse(BaseModel):
 @router.post("/run-search", response_model=SearchResponse)
 async def run_search(request: SearchRequest):
     try:
-        # Trata os termos de busca de acordo com a seleção
         if "Todas" in request.job_target:
             query_job = "Atendimento ao Cliente OR Auxiliar de Operações OR Agente de Higienização"
             display_job = "Vagas SPA (Atendimento / Auxiliar / Higienização)"
@@ -102,7 +87,6 @@ async def run_search(request: SearchRequest):
             )
             candidates.append(candidate_obj)
 
-            # Notificação Telegram em background (protegida para não derrubar a rota se falhar)
             try:
                 card_telegram = (
                     f"🚗 <b>FisgAI Engine | Localiza&co SP</b>\n"
@@ -128,5 +112,7 @@ async def run_search(request: SearchRequest):
         )
 
     except Exception as e:
-        # Retorna o erro detalhado para facilitar o diagnóstico no front-end
-        raise HTTPException(status_code=500, detail=f"Erro interno no motor de busca: {str(e)}")
+        # Imprime o erro completo no console/logs do Render para diagnóstico instantâneo
+        print("=== ERRO DETALHADO NO /run-search ===")
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=f"Erro interno: {str(e)}")
