@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Descomplic.AI - FisgAI Localiza&co | Efeito Mariposa & 10 Leads</title>
+    <title>Descomplic.AI - FisgAI Localiza&co | Sourcing Enterprise</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
-<body class="bg-slate-900 text-slate-100 min-h-screen font-sans">
+<body class="bg-slate-900 text-slate-100 min-h-screen font-sans flex flex-col justify-between">
     <!-- Header / Navbar -->
     <header class="border-b border-emerald-500/20 bg-slate-950/80 backdrop-blur sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
@@ -30,38 +30,12 @@
     </header>
 
     <!-- Main Content -->
-    <main class="max-w-7xl mx-auto px-6 py-8">
+    <main class="max-w-7xl mx-auto px-6 py-8 w-full flex-grow">
         
-        <!-- Bloco: Gerador de Posts Magnéticos (Efeito Mariposa) -->
-        <div class="bg-gradient-to-r from-emerald-950/40 via-slate-800/60 to-slate-800/60 border border-emerald-500/30 rounded-2xl p-6 mb-8 shadow-2xl relative overflow-hidden">
-            <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none"></div>
-            <h2 class="text-base font-bold text-emerald-400 mb-2 flex items-center gap-2">
-                <i class="fa-solid fa-wand-magic-sparkles"></i> Gerador de Copy Virais para a Web (Atração Mariposa)
-            </h2>
-            <p class="text-xs text-slate-300 mb-4">Gere posts prontos otimizados para disparar em redes sociais e grupos, atraindo os candidatos direto para o WhatsApp da Michele.</p>
-            
-            <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
-                <div class="md:col-span-8">
-                    <textarea id="viralCopyBox" rows="3" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-xs text-slate-200 focus:outline-none focus:border-emerald-500 font-mono shadow-inner" readonly>🚀 VAGA LOCALIZA&CO EM SÃO PAULO! (#VEMSERSANGUEVERDE) 💚
-Estamos recrutando talentos com CNH para oportunidades de Atendimento, Operações e Higienização! 
-🎁 Benefícios completos (VR, VT, Wellhub, PLR e muito mais).
-📲 Garanta sua vaga direto com nossa recrutadora no WhatsApp: https://wa.me/553130761266?text=Olá!%20Vi%20a%20vaga%20da%20Localiza%20na%20web%20e%20tenho%20interesse!</textarea>
-                </div>
-                <div class="md:col-span-4 flex flex-col gap-2">
-                    <button onclick="copyViralCopy()" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold py-3 px-4 rounded-xl text-xs transition flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 cursor-pointer">
-                        <i class="fa-regular fa-copy"></i> Copiar Copy Magnética
-                    </button>
-                    <a href="https://wa.me/553130761266?text=Olá%20Michele!%20Iniciando%20campanha%20de%20Atração%20Mariposa." target="_blank" class="w-full bg-slate-900 hover:bg-slate-800 text-emerald-400 border border-emerald-500/30 text-center font-semibold py-2.5 px-4 rounded-xl text-xs transition flex items-center justify-center gap-2">
-                        <i class="fa-brands fa-whatsapp"></i> Testar Canal da Michele
-                    </a>
-                </div>
-            </div>
-        </div>
-
         <!-- Painel de Filtros e Disparo -->
         <div class="bg-slate-800/50 border border-slate-700/60 rounded-2xl p-6 mb-8 shadow-xl">
             <h2 class="text-lg font-semibold text-slate-200 mb-4 flex items-center gap-2">
-                <i class="fa-solid fa-bullhorn text-emerald-400"></i> Parâmetros de Disparo e Captação Web (10 Leads)
+                <i class="fa-solid fa-bullhorn text-emerald-400"></i> Parâmetros de Sourcing e Captação Web (10 Leads)
             </h2>
             
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -115,14 +89,12 @@ Estamos recrutando talentos com CNH para oportunidades de Atendimento, Operaçõ
         </div>
     </main>
 
-    <script>
-        function copyViralCopy() {
-            const box = document.getElementById('viralCopyBox');
-            box.select();
-            navigator.clipboard.writeText(box.value);
-            alert('Copy Magnética copiada com sucesso! Cole em grupos, redes sociais e portais para atrair candidatos.');
-        }
+    <!-- Footer -->
+    <footer class="border-t border-slate-800 bg-slate-950/60 py-6 mt-12 text-xs text-slate-500 text-center">
+        <p>Descomplic.AI • Powered by Melo Strategic AI & Localiza&co</p>
+    </footer>
 
+    <script>
         async function executeSearch() {
             const btn = document.getElementById('btnSearch');
             const grid = document.getElementById('candidatesGrid');
