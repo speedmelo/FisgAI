@@ -1,102 +1,58 @@
 <!DOCTYPE html>
-<html lang="pt-BR" class="dark">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FisgAI Suite | Sourcing de Candidatos & WhatsApp</title>
+    <title>Descomplic.AI - FisgAI Localiza&co | Outbound</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        emerald: { 400: '#34d399', 500: '#10b981', 600: '#059669', 950: '#022c22' },
-                        slate: { 850: '#0f172a', 900: '#0b0f19', 950: '#05070c' }
-                    }
-                }
-            }
-        }
-    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen font-sans selection:bg-emerald-500 selection:text-slate-950 flex flex-col justify-between">
-
-    <!-- Header / Navbar Suite -->
-    <header class="border-b border-emerald-500/20 bg-slate-900/80 backdrop-blur-md sticky top-0 z-50">
+<body class="bg-slate-900 text-slate-100 min-h-screen font-sans">
+    <!-- Header / Navbar -->
+    <header class="border-b border-emerald-500/20 bg-slate-950/80 backdrop-blur sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
             <div class="flex items-center gap-3">
-                <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-emerald-400 to-teal-600 flex items-center justify-center font-black text-slate-950 text-2xl shadow-lg shadow-emerald-500/20">
+                <div class="w-10 h-10 rounded-xl bg-emerald-500 flex items-center justify-center font-bold text-slate-950 text-xl shadow-lg shadow-emerald-500/30">
                     ⚡
                 </div>
                 <div>
-                    <div class="flex items-center gap-2">
-                        <h1 class="text-lg font-bold bg-gradient-to-r from-emerald-400 via-teal-200 to-cyan-300 bg-clip-text text-transparent">
-                            FisgAI Suite • Sourcing Direto
-                        </h1>
-                        <span class="text-[10px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-full">
-                            Enterprise v2.3
-                        </span>
-                    </div>
-                    <p class="text-[11px] text-slate-400 font-medium">
-                        Powered by <span class="text-emerald-400 font-semibold">Melo Strategic AI</span> • Localiza&co
-                    </p>
+                    <h1 class="text-xl font-bold bg-gradient-to-r from-emerald-400 to-teal-200 bg-clip-text text-transparent">
+                        Descomplic.AI <span class="text-xs font-normal text-slate-400">| Outbound & Campanhas</span>
+                    </h1>
+                    <p class="text-xs text-emerald-400/80 font-medium">#VEMSERSANGUEVERDE • WhatsApp Michele: +55 31 3076-1266</p>
                 </div>
             </div>
-
-            <div class="flex items-center gap-4">
-                <div class="flex items-center gap-2 text-xs bg-slate-900 px-3.5 py-2 rounded-full border border-slate-800 shadow-inner">
-                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                    <span class="text-slate-300 font-medium">WhatsApp Business (+55 31 3076-1266)</span>
-                </div>
+            <div class="flex items-center gap-2 text-xs bg-slate-800/80 px-3 py-1.5 rounded-full border border-slate-700">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span class="text-slate-300">Engine Outbound Online</span>
             </div>
         </div>
     </header>
 
     <!-- Main Content -->
-    <main class="max-w-7xl mx-auto px-6 py-8 w-full flex-grow">
-        
-        <!-- Hero Banner -->
-        <div class="mb-8 bg-gradient-to-r from-slate-900 via-slate-900 to-emerald-950/30 border border-slate-800/80 rounded-3xl p-6 md:p-8 shadow-2xl relative overflow-hidden">
-            <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-emerald-500/5 rounded-full blur-3xl pointer-events-none"></div>
-            <div class="max-w-2xl">
-                <span class="text-xs font-bold uppercase tracking-wider text-emerald-400 mb-2 block">
-                    #VEMSERSANGUEVERDE 💚 • Disparo Direto para o WhatsApp
-                </span>
-                <h2 class="text-2xl md:text-3xl font-extrabold text-slate-100 tracking-tight mb-2">
-                    Caça de Talentos & Abordagem Instantânea
-                </h2>
-                <p class="text-sm text-slate-400 leading-relaxed">
-                    Localize profissionais na web com CNH e acione o canal de contato direto integrando automaticamente o nome do candidato ao WhatsApp corporativo (<span class="text-emerald-400 font-semibold">+55 31 3076-1266</span>).
-                </p>
-            </div>
-        </div>
-
-        <!-- Painel de Filtros -->
-        <div class="bg-slate-900/90 border border-slate-800 rounded-3xl p-6 md:p-8 mb-10 shadow-xl backdrop-blur">
-            <h3 class="text-base font-bold text-slate-200 mb-5 flex items-center gap-2.5">
-                <div class="w-7 h-7 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-xs">
-                    <i class="fa-solid fa-users"></i>
-                </div> 
-                Critérios de Busca de Candidatos
-            </h3>
+    <main class="max-w-7xl mx-auto px-6 py-8">
+        <!-- Painel de Filtros e Disparo -->
+        <div class="bg-slate-800/50 border border-slate-700/60 rounded-2xl p-6 mb-8 shadow-xl">
+            <h2 class="text-lg font-semibold text-slate-200 mb-4 flex items-center gap-2">
+                <i class="fa-solid fa-bullhorn text-emerald-400"></i> Parâmetros de Disparo e Captação Web
+            </h2>
             
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-end">
-                <!-- Cargo Alvo -->
-                <div class="lg:col-span-4">
-                    <label for="jobTarget" class="block text-xs font-semibold text-slate-400 mb-2 uppercase tracking-wider">Cargo / Perfil do Candidato</label>
-                    <select id="jobTarget" class="w-full bg-slate-950 border border-slate-800 rounded-2xl px-4 py-3.5 text-slate-200 text-sm focus:outline-none focus:border-emerald-500 transition shadow-inner">
-                        <option value="Atendente de Locação">Atendente de Locação / Cliente</option>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Vaga -->
+                <div>
+                    <label for="jobTarget" class="block text-xs font-medium text-slate-400 mb-2">Vaga SPA Localiza</label>
+                    <select id="jobTarget" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-slate-200 focus:outline-none focus:border-emerald-500 transition">
+                        <option value="Todas as Vagas SPA (Atendimento, Auxiliar, Higienização)">Todas as Vagas SPA (Atendimento, Auxiliar, Higienização)</option>
+                        <option value="Atendimento ao Cliente">Atendimento ao Cliente</option>
                         <option value="Auxiliar de Operações">Auxiliar de Operações</option>
-                        <option value="Agente de Higienização de Veículos">Agente de Higienização</option>
-                        <option value="Motorista Entregador Frota">Motorista / Frota</option>
+                        <option value="Agente de Higienização">Agente de Higienização</option>
                     </select>
                 </div>
 
                 <!-- Região SP -->
-                <div class="lg:col-span-3">
-                    <label for="location" class="block text-xs font-semibold text-slate-400 mb-2 uppercase tracking-wider">Região (SP)</label>
-                    <select id="location" class="w-full bg-slate-950 border border-slate-800 rounded-2xl px-4 py-3.5 text-slate-200 text-sm focus:outline-none focus:border-emerald-500 transition shadow-inner">
+                <div>
+                    <label for="location" class="block text-xs font-medium text-slate-400 mb-2">Região de Atuação (SP)</label>
+                    <select id="location" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-slate-200 focus:outline-none focus:border-emerald-500 transition">
                         <option value="São Paulo - SP">São Paulo - Capital</option>
                         <option value="Grande São Paulo - SP">Grande São Paulo</option>
                         <option value="Guarulhos - SP">Guarulhos</option>
@@ -104,56 +60,33 @@
                     </select>
                 </div>
 
-                <!-- Volume -->
-                <div class="lg:col-span-2">
-                    <label for="maxResults" class="block text-xs font-semibold text-slate-400 mb-2 uppercase tracking-wider">Volume</label>
-                    <select id="maxResults" class="w-full bg-slate-950 border border-slate-800 rounded-2xl px-4 py-3.5 text-slate-200 text-sm focus:outline-none focus:border-emerald-500 transition shadow-inner">
-                        <option value="3">3 Candidatos</option>
-                        <option value="6" selected>6 Candidatos</option>
-                        <option value="9">9 Candidatos</option>
-                        <option value="10">10 Candidatos (Máx)</option>
-                    </select>
-                </div>
-
                 <!-- Botão Ação -->
-                <div class="lg:col-span-3">
-                    <button onclick="executeSearch()" id="btnSearch" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold py-3.5 px-6 rounded-2xl transition flex items-center justify-center gap-2.5 shadow-lg shadow-emerald-500/25 active:scale-98 cursor-pointer text-sm">
-                        <i class="fa-solid fa-radar text-base"></i> Localizar Candidatos
+                <div class="flex items-end">
+                    <button onclick="executeSearch()" id="btnSearch" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold py-3 px-6 rounded-xl transition flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 active:scale-98 cursor-pointer">
+                        <i class="fa-solid fa-rocket"></i> Gerar Leads & Campanhas
                     </button>
                 </div>
             </div>
         </div>
 
         <!-- Header da Lista de Resultados -->
-        <div class="flex justify-between items-center mb-6 px-1">
-            <h3 class="text-lg font-bold text-slate-100 flex items-center gap-2">
-                <i class="fa-solid fa-id-card text-emerald-400"></i>
-                Candidatos Encontrados na Base
+        <div class="flex justify-between items-center mb-6">
+            <h3 class="text-xl font-bold text-slate-100 flex items-center gap-2">
+                <i class="fa-solid fa-users-viewfinder text-emerald-400"></i>
+                Oportunidades de Abordagem para a Michele
             </h3>
-            <span id="resultsCount" class="text-xs font-medium text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1.5 rounded-xl">
-                0 encontrado(s)
-            </span>
+            <span id="resultsCount" class="text-xs text-slate-400 bg-slate-800 px-3 py-1 rounded-lg">0 encontrado(s)</span>
         </div>
 
         <!-- Cards Grid -->
         <div id="candidatesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div class="col-span-full bg-slate-900/50 border border-dashed border-slate-800 rounded-3xl p-16 text-center">
-                <div class="w-16 h-16 rounded-3xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-2xl mx-auto mb-4 shadow-inner">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                </div>
-                <h4 class="text-base font-semibold text-slate-200 mb-1">Pronto para caçar talentos</h4>
-                <p class="text-xs text-slate-500 max-w-md mx-auto">Selecione o perfil desejado e clique para listar os candidatos disponíveis em São Paulo.</p>
+            <div class="col-span-full bg-slate-800/20 border border-dashed border-slate-700 rounded-2xl p-12 text-center">
+                <i class="fa-solid fa-radar text-4xl text-slate-600 mb-3 animate-spin"></i>
+                <p class="text-slate-400 font-medium">Selecione os parâmetros e clique em "Gerar Leads & Campanhas".</p>
+                <p class="text-xs text-slate-500 mt-1">A engine mapeará a web para gerar os links de direcionamento direto ao WhatsApp da Michele.</p>
             </div>
         </div>
     </main>
-
-    <!-- Footer -->
-    <footer class="border-t border-slate-800/80 bg-slate-900/60 py-6 mt-12 text-xs text-slate-400">
-        <div class="max-w-7xl mx-auto px-6 text-center">
-            <p class="font-semibold text-slate-300">FisgAI Suite • Desenvolvido por <span class="text-emerald-400">Melo Strategic AI</span></p>
-            <p class="text-[11px] text-slate-500 mt-0.5">Automação de Recrutamento Operacional • Localiza&co</p>
-        </div>
-    </footer>
 
     <script>
         async function executeSearch() {
@@ -163,28 +96,18 @@
 
             const jobTarget = document.getElementById('jobTarget').value;
             const location = document.getElementById('location').value;
-            const maxResults = parseInt(document.getElementById('maxResults').value);
 
             btn.disabled = true;
-            btn.innerHTML = `<i class="fa-solid fa-circle-notch animate-spin"></i> Caçando Perfis...`;
-            
-            let skeletons = '';
-            for(let i=0; i<maxResults; i++) {
-                skeletons += `
-                    <div class="bg-slate-900/60 border border-slate-800 rounded-3xl p-6 shadow-xl animate-pulse flex flex-col justify-between h-48">
-                        <div>
-                            <div class="flex justify-between mb-4">
-                                <div class="w-20 h-5 bg-slate-800 rounded-lg"></div>
-                                <div class="w-16 h-5 bg-slate-800 rounded-lg"></div>
-                            </div>
-                            <div class="w-3/4 h-5 bg-slate-800 rounded-lg mb-2"></div>
-                            <div class="w-1/2 h-4 bg-slate-800/60 rounded-lg"></div>
-                        </div>
-                        <div class="w-full h-10 bg-slate-800/80 rounded-2xl"></div>
+            btn.innerHTML = `<i class="fa-solid fa-circle-notch animate-spin"></i> Mapeando Web...`;
+            grid.innerHTML = `
+                <div class="col-span-full py-16 text-center">
+                    <div class="inline-block p-4 rounded-full bg-emerald-500/10 text-emerald-400 mb-4 animate-bounce">
+                        <i class="fa-solid fa-microchip text-3xl"></i>
                     </div>
-                `;
-            }
-            grid.innerHTML = skeletons;
+                    <h4 class="text-lg font-semibold text-slate-200">Varrendo web e gerando links de campanha em ${location}...</h4>
+                    <p class="text-xs text-slate-400 mt-1">Preparando funil de captação para o WhatsApp Business da Michele (+55 31 3076-1266).</p>
+                </div>
+            `;
 
             try {
                 const API_URL = window.location.hostname.includes('onrender.com') 
@@ -198,59 +121,52 @@
                         job_target: jobTarget,
                         location: location,
                         cnh_required: true,
-                        max_results: maxResults
+                        max_results: 6
                     })
                 });
 
                 const data = await response.json();
                 grid.innerHTML = '';
-                countLabel.innerText = `${data.candidates.length} candidato(s)`;
+                countLabel.innerText = `${data.candidates.length} lead(s) gerado(s)`;
 
                 if (!data.candidates || data.candidates.length === 0) {
-                    grid.innerHTML = `
-                        <div class="col-span-full bg-slate-900/40 border border-slate-800 rounded-3xl p-12 text-center">
-                            <p class="text-slate-400 text-sm">Nenhum candidato encontrado nesta combinação.</p>
-                        </div>
-                    `;
+                    grid.innerHTML = `<p class="col-span-full text-center text-slate-400">Nenhum perfil encontrado nesta combinação.</p>`;
                     return;
                 }
 
                 data.candidates.forEach(candidate => {
-                    const rawTitle = candidate.name_or_snippet || "Candidato Localiza";
-                    const candidateName = rawTitle.split("-")[0].split("|")[0].trim().substring(0, 35);
-                    const businessWhatsApp = "553130761266";
-
-                    // Mensagem formatada pronta para o WhatsApp Business da empresa com os dados do candidato
-                    const messageText = `Olá equipe! Identifiquei o(a) candidato(a) *${candidateName}* para a vaga de *${candidate.job_target}* em *${candidate.location}* (#VEMSERSANGUEVERDE). Segue o link do perfil para iniciar o contato direto: ${candidate.whatsapp_link}`;
-                    const directWhatsAppUrl = `https://wa.me/${businessWhatsApp}?text=${encodeURIComponent(messageText)}`;
+                    // Número fixo do WhatsApp Business da Michele: +55 31 3076-1266 -> 553130761266
+                    const micheleWhatsApp = "553130761266";
+                    
+                    // Mensagem pronta para o candidato ou para a campanha disparar para a Michele
+                    const campanhaMsg = encodeURIComponent(
+                        `Olá Michele! Vi a oportunidade da vaga de *${candidate.job_target}* em *${candidate.location}* (#VEMSERSANGUEVERDE) e tenho interesse em participar do processo seletivo da Localiza&co. Segue o link de referência: ${candidate.whatsapp_link}`
+                    );
+                    const whatsappCampanhaLink = `https://wa.me/${micheleWhatsApp}?text=${campanhaMsg}`;
 
                     const card = `
-                        <div class="bg-slate-900/90 border border-slate-800/80 rounded-3xl p-6 shadow-2xl hover:border-emerald-500/40 transition-all duration-300 flex flex-col justify-between group">
+                        <div class="bg-slate-800/80 border border-slate-700/80 rounded-2xl p-6 shadow-xl hover:border-emerald-500/50 transition flex flex-col justify-between">
                             <div>
-                                <div class="flex justify-between items-center mb-4">
-                                    <span class="text-[11px] font-black uppercase tracking-wider bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-3 py-1 rounded-xl shadow-inner">
+                                <div class="flex justify-between items-start mb-3">
+                                    <span class="text-[10px] uppercase tracking-wider font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2.5 py-1 rounded-md">
                                         Score: ${candidate.score}/10
                                     </span>
-                                    <span class="text-[11px] font-medium bg-slate-950 text-emerald-300 border border-emerald-500/30 px-2.5 py-1 rounded-xl flex items-center gap-1.5 shadow-inner">
-                                        <i class="fa-solid fa-id-card text-emerald-400"></i> CNH Ativa
+                                    <span class="text-[11px] bg-slate-700 text-slate-300 px-2 py-0.5 rounded flex items-center gap-1">
+                                        <i class="fa-solid fa-id-card text-emerald-400"></i> CNH OK
                                     </span>
                                 </div>
-                                <h4 class="text-base font-bold text-slate-100 mb-1.5 group-hover:text-emerald-300 transition line-clamp-1">
-                                    ${candidateName}
-                                </h4>
-                                <p class="text-xs text-emerald-400/90 font-medium mb-3">${candidate.job_target}</p>
-                                <p class="text-xs text-slate-400 flex items-center gap-1.5 mb-4">
-                                    <i class="fa-solid fa-location-dot text-slate-500"></i> ${candidate.location}
+                                <h4 class="text-base font-bold text-slate-100 mb-1 line-clamp-1">${candidate.name_or_snippet}</h4>
+                                <p class="text-xs text-emerald-400 font-medium mb-3">${candidate.job_target}</p>
+                                <p class="text-xs text-slate-400 leading-relaxed mb-4">
+                                    <i class="fa-solid fa-location-dot text-slate-500 mr-1"></i> ${candidate.location}
                                 </p>
                             </div>
-                            <div class="pt-4 border-t border-slate-800/80 flex flex-col gap-2">
-                                <!-- Botão de Disparo Direto para o WhatsApp Business -->
-                                <a href="${directWhatsAppUrl}" target="_blank" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-center text-xs font-bold py-3 rounded-2xl transition-all duration-300 flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20">
-                                    <i class="fa-brands fa-whatsapp text-sm"></i> Disparar WhatsApp Corporativo
+                            <div class="pt-4 border-t border-slate-700/60 flex flex-col gap-2">
+                                <a href="${whatsappCampanhaLink}" target="_blank" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-center text-xs font-bold py-3 rounded-xl transition flex items-center justify-center gap-1.5 shadow-md">
+                                    <i class="fa-brands fa-whatsapp text-sm"></i> Disparar Campanha WhatsApp (+55 31 3076-1266)
                                 </a>
-                                <!-- Link original do currículo/perfil -->
-                                <a href="${candidate.whatsapp_link}" target="_blank" class="w-full bg-slate-950 hover:bg-slate-800 text-slate-300 border border-slate-800 text-center text-xs font-medium py-2.5 rounded-xl transition flex items-center justify-center gap-1.5">
-                                    <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> Ver Currículo Original
+                                <a href="${candidate.whatsapp_link}" target="_blank" class="w-full bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-700 text-center text-xs font-semibold py-2 rounded-xl transition flex items-center justify-center gap-1">
+                                    <i class="fa-solid fa-arrow-up-right-from-square"></i> Ver Fonte Web
                                 </a>
                             </div>
                         </div>
@@ -259,14 +175,10 @@
                 });
 
             } catch (error) {
-                grid.innerHTML = `
-                    <div class="col-span-full bg-rose-950/20 border border-rose-900/30 rounded-3xl p-12 text-center">
-                        <p class="text-rose-400 text-sm font-medium">Erro ao comunicar com o cluster backend no Render. Tente novamente.</p>
-                    </div>
-                `;
+                grid.innerHTML = `<p class="col-span-full text-center text-rose-400">Erro ao consultar backend no Render. Tente novamente em instantes.</p>`;
             } finally {
                 btn.disabled = false;
-                btn.innerHTML = `<i class="fa-solid fa-radar text-base"></i> Localizar Candidatos`;
+                btn.innerHTML = `<i class="fa-solid fa-rocket"></i> Gerar Leads & Campanhas`;
             }
         }
     </script>
