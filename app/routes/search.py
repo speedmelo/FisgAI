@@ -50,9 +50,9 @@ async def run_search(request: SearchRequest):
             query_job = job_str
             display_job = job_str
 
-        # Força sempre o alvo de 10 resultados para o pacote
-        target_count = 10
+        target_count = int(request.max_results or 10)
 
+        # Executa a busca estritamente real na web
         try:
             raw_results = await search_professional_profiles(
                 job_target=query_job,
@@ -60,40 +60,32 @@ async def run_search(request: SearchRequest):
                 num_results=target_count,
             )
         except Exception as search_err:
-            print(f"[AVISO] Falha Serper: {str(search_err)}")
+            print(f"[AVISO] Falha na busca de sourcing real: {str(search_err)}")
             raw_results = []
 
-        # Se a web retornar menos de 10, preenchemos inteligentemente com variações reais simuladas para fechar o lote de 10
-        base_names = [
-            "Carlos Eduardo Silva", "Ana Paula de Souza", "Marcos Vinicius Santos",
-            "Juliana Almeida Costa", "Lucas Gabriel Oliveira", "Fernanda Lima Ribeiro",
-            "Bruno Henrique Martins", "Camila Rodrigues Pereira", "Rafael Souza Mendes", "Patrícia Gomes Rocha"
-        ]
-        
         candidates = []
-        for i in range(target_count):
-            idx = i + 1
-            if i < len(raw_results):
-                item = raw_results[i]
-                title_raw = item.get("title", f"Candidato Localiza {idx}")
-                clean_name = title_raw.split("-")[0].replace("|", "").strip()
-                link = item.get("link", "https://linkedin.com/in/candidato-localiza-sp")
-                snippet = item.get("snippet", f"Profissional com CNH definitiva e experiência em {display_job} em {loc_str}.")
-            else:
-                # Complemento automático para garantir exatamente 10 perfis por lote
-                clean_name = base_names[i % len(base_names)]
-                link = f"https://www.linkedin.com/in/{clean_name.lower().replace(' ', '-')}-sp"
-                snippet = f"Candidato verificado via radar MLOps. Possui CNH categoria B e disponibilidade para atuar com {display_job} em {loc_str}."
+        
+        # Processa estritamente os resultados reais retornados pela engine (sem mock/nomes falsos)
+        for idx, item in enumerate(raw_results[:target_count], start=1):
+            title_raw = item.get("title", f"Oportunidade Real #{idx}")
+            
+            # Limpeza cirúrgica do título tirando ruídos de portais
+            clean_name = title_raw.split("-")[0].split("|")[0].strip()
+            if not clean_name or len(clean_name) < 3:
+                clean_name = f"Perfil Profissional #{idx}"
 
-            # Score Dinâmico Individual
+            link = item.get("link", "#")
+            snippet = item.get("snippet", f"Perfil real mapeado para {display_job} em {loc_str}.")
+
+            # --- MOTOR DE MLOPS: Score Dinâmico Baseado no Conteúdo Real ---
             base_score = 8.5
             snippet_lower = snippet.lower()
-            if "cnh" in snippet_lower or "habilitado" in snippet_lower:
-                base_score += 0.7
-            if "experiência" in snippet_lower or "atendimento" in snippet_lower or "operacoes" in snippet_lower:
+            if "cnh" in snippet_lower or "habilitado" in snippet_lower or "motorista" in snippet_lower:
+                base_score += 0.8
+            if "experiência" in snippet_lower or "atendimento" in snippet_lower or "operacoes" in snippet_lower or "profissional" in snippet_lower:
                 base_score += 0.6
                 
-            score = round(min(base_score + (idx * 0.03), 9.9), 1)
+            score = round(min(base_score + (idx * 0.02), 9.9), 1)
             cnh_verified = "CNH Definitiva (+1 ano OK)" if request.cnh_required else "Não checado"
 
             candidate_obj = CandidateResult(
@@ -109,13 +101,13 @@ async def run_search(request: SearchRequest):
             )
             candidates.append(candidate_obj)
 
-            # Notificação Telegram (opcional/silenciosa)
+            # Notificação Telegram real (opcional)
             try:
                 card_telegram = (
-                    f"🚗 <b>FisgAI Engine | Localiza&co SP ({idx}/10)</b>\n"
+                    f"🚗 <b>FisgAI Engine | Localiza&co SP ({idx})</b>\n"
                     f"<i>#VEMSERSANGUEVERDE</i> 💚\n\n"
                     f"🎯 <b>Vaga:</b> {display_job}\n"
-                    f"👤 <b>Candidato:</b> {clean_name}\n"
+                    f"👤 <b>Lead Real:</b> {clean_name}\n"
                     f"⭐ <b>Score:</b> {score}/10\n"
                     f"🔗 <b>Link:</b> {link}"
                 )
@@ -124,7 +116,7 @@ async def run_search(request: SearchRequest):
                 pass
 
         return SearchResponse(
-            message=f"Lote de 10 leads gerado com sucesso para {loc_str}.",
+            message=f"Busca real concluída com {len(candidates)} resultado(s) para {loc_str}.",
             qualified=len(candidates),
             saved=len(candidates),
             duplicates=0,
