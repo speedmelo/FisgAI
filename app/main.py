@@ -1,3 +1,4 @@
+main py
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -5,7 +6,6 @@ from fastapi.responses import FileResponse, HTMLResponse
 import os
 
 from app.routes.search import router as search_router
-from app.routes.whatsapp_router import router as whatsapp_router  # <--- Novo módulo de Disparo Pesado
 from app.services.telegram_service import send_telegram_notification
 
 
@@ -16,8 +16,8 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(
     title="FisgAI Engine",
-    version="3.0.0",
-    description="Motor de busca, qualificação e disparos autônomos para Localiza Enterprise",
+    version="2.0.0",
+    description="Motor de busca e qualificação de candidatos para Localiza Enterprise",
     lifespan=lifespan,
     docs_url="/docs",
     redoc_url="/redoc",
@@ -31,9 +31,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Registro central dos roteadores (Busca + Disparos Autônomos)
+# Registro central do roteador
 app.include_router(search_router)
-app.include_router(whatsapp_router)
 
 
 # Rota Principal: Serve o Dashboard visual do Descomplic.AI-Talentos
@@ -44,7 +43,7 @@ async def serve_dashboard():
     return {
         "status": "online",
         "service": "FisgAI Engine",
-        "version": "3.0.0",
+        "version": "2.0.0",
         "message": "API ativa! Para visualizar o painel, certifique-se de que o arquivo index.html está na raiz do projeto.",
         "docs": "/docs"
     }
@@ -56,7 +55,7 @@ def health_check():
     return {
         "status": "online",
         "service": "FisgAI Engine",
-        "version": "3.0.0",
+        "version": "2.0.0",
         "client": "Localiza Enterprise",
     }
 
