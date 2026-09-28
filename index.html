@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; font-src 'self' https://cdnjs.cloudflare.com data:;">
     <title>Descomplic.AI - FisgAI Localiza&co</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
-<body class="bg-slate-900 text-slate-100 min-h-screen font-sans">
+<body class="bg-slate-900 text-slate-100 min-h-screen font-sans flex flex-col justify-between">
     <!-- Header / Navbar -->
     <header class="border-b border-emerald-500/20 bg-slate-950/80 backdrop-blur sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
@@ -30,7 +31,7 @@
     </header>
 
     <!-- Main Content -->
-    <main class="max-w-7xl mx-auto px-6 py-8">
+    <main class="max-w-7xl mx-auto px-6 py-8 w-full flex-grow">
         <!-- Painel de Filtros da Localiza -->
         <div class="bg-slate-800/50 border border-slate-700/60 rounded-2xl p-6 mb-8 shadow-xl">
             <h2 class="text-lg font-semibold text-slate-200 mb-4 flex items-center gap-2">
@@ -94,10 +95,15 @@
             <div class="col-span-full bg-slate-800/20 border border-dashed border-slate-700 rounded-2xl p-12 text-center">
                 <i class="fa-solid fa-radar text-4xl text-slate-600 mb-3 animate-spin"></i>
                 <p class="text-slate-400 font-medium">Selecione os parâmetros acima e clique em "Fisgar Talentos".</p>
-                <p class="text-xs text-slate-500 mt-1">O motor do FisgAI vai varrer as bases do LinkedIn, Catho e validar requisitos de CNH.</p>
+                <p class="text-xs text-slate-500 mt-1">O motor do FisgAI vai varrer as bases da web e validar requisitos de CNH.</p>
             </div>
         </div>
     </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800 bg-slate-950/60 py-6 mt-12 text-xs text-slate-500 text-center">
+        <p>Descomplic.AI • Powered by Melo Strategic AI & Localiza&co</p>
+    </footer>
 
     <script>
         async function executeSearch() {
@@ -117,7 +123,7 @@
                         <i class="fa-solid fa-microchip text-3xl"></i>
                     </div>
                     <h4 class="text-lg font-semibold text-slate-200">Varrendo até ${maxResults} perfis em ${location}...</h4>
-                    <p class="text-xs text-slate-400 mt-1">Aplicando inteligência do Gemini Flash para score e validação de CNH.</p>
+                    <p class="text-xs text-slate-400 mt-1">Aplicando inteligência para score e validação de CNH.</p>
                 </div>
             `;
 
