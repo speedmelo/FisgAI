@@ -18,9 +18,9 @@ async def search_professional_profiles(
 
     url = "https://google.serper.dev/search"
 
-    # Mapeamento de variações e sinônimos operacionais da Localiza&co
+    # Mapeamento estrito para as vagas operacionais da Localiza na Gupy
     variations_map = {
-        "Atendimento ao Cliente": '("Atendimento ao Cliente" OR "Agente de Atendimento" OR "Recepcionista")',
+        "Atendimento ao Cliente": '("Atendimento ao Cliente" OR "Atendente" OR "Recepcionista")',
         "Auxiliar de Operações": '("Auxiliar de Operações" OR "Auxiliar de Pátio" OR "Manobrista")',
         "Agente de Higienização": '("Agente de Higienização" OR "Higienizador Automotivo" OR "Lavador de Veículos")',
         "Todas as Vagas SPA (Atendimento, Auxiliar, Higienização)": '(Atendimento OR "Auxiliar de Operações" OR Higienização OR Manobrista)',
@@ -28,11 +28,12 @@ async def search_professional_profiles(
 
     expanded_terms = variations_map.get(job_target, f'"{job_target}"')
 
-    # Query B2B altamente compatível com a indexação do Google para São Paulo
+    # Query cirúrgica focada estritamente no portal Gupy da Localiza em SP com CNH
     query = (
+        f'site:localiza.gupy.io/jobs '
         f'{expanded_terms} '
         f'"{location}" '
-        f'("LinkedIn" OR "Currículo" OR "Perfil" OR "CNH" OR "Habilitado")'
+        f'("CNH" OR "Habilitado" OR "Motorista" OR "Vaga")'
     )
 
     headers = {
@@ -48,14 +49,22 @@ async def search_professional_profiles(
     }
 
     try:
-        logger.info(f"Executando Sourcing B2B | Cargo: {job_target} | Local: {location}")
+        logger.info(f"Executando Sourcing Gupy Localiza | Cargo: {job_target} | Local: {location}")
         async with httpx.AsyncClient(timeout=15.0) as client:
             resp = await client.post(url, json=payload, headers=headers)
             resp.raise_for_status()
             data = resp.json()
             organic = data.get("organic", [])
             
-            # Retorna exatamente o número de resultados solicitados pelo operador no front
+            # Se a busca restrita na Gupy vier enxuta por algum motivo, fazemos um fallback elegante para o domínio geral da Gupy
+            if not organic:
+                logger.warning("Busca estrita na Gupy Localiza retornou vazia. Expandindo para portais Gupy gerais em SP...")
+                fallback_query = f'site:gupy.io {expanded_terms} "{location}"'
+                payload["q"] = fallback_query
+                resp_fb = await client.post(url, json=payload, headers=headers)
+                data_fb = resp_fb.json()
+                organic = data_fb.get("organic", [])
+
             return organic[:num_results]
 
     except httpx.HTTPStatusError as http_err:
@@ -63,4 +72,4 @@ async def search_professional_profiles(
         raise SearchServiceError(f"Falha na comunicação com o provedor de busca: {http_err.response.status_code}")
     except Exception as e:
         logger.exception(f"Erro crítico no search_service: {str(e)}")
-        raise SearchServiceError(f"Erro na busca de perfis via Serper: {str(e)}")
+        raise SearchServiceError(f"Erro na busca Gupy via Serper: {str(e)}")
