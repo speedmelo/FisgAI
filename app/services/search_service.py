@@ -1,5 +1,4 @@
 import httpx
-import random
 from app.core.config import settings
 
 
@@ -15,66 +14,122 @@ async def search_professional_profiles(
 
     url = "https://google.serper.dev/search"
 
-    # Mapeamento estrito de cargos operacionais para perfis de pessoas
-    job_aliases = {
-        "Atendimento ao Cliente": '("Atendimento ao Cliente" OR "Recepcionista" OR "Atendente")',
-        "Auxiliar de Operações": '("Auxiliar de Operações" OR "Auxiliar de Pátio" OR "Manobrista")',
-        "Agente de Higienização": '("Agente de Higienização" OR "Higienizador Automotivo" OR "Lavador de Veículos")',
-        "Todas as Vagas SPA (Atendimento, Auxiliar, Higienização)": '(Atendimento OR "Auxiliar de Operações" OR Higienização OR Manobrista)',
+    # Mapeamento de variações e sinônimos operacionais da Localiza&co
+    variations_map = {
+        "Atendimento ao Cliente": '("Atendimento ao Cliente" OR "Agente de Atendimento" OR "Recepcionista" OR "Consultor de Atendimento")',
+        "Auxiliar de Operações": '("Auxiliar de Operações" OR "Auxiliar de Pátio" OR "Agente de Pátio" OR "Manobrista" OR "Auxiliar de Logística")',
+        "Agente de Higienização": '("Agente de Higienização" OR "Higienizador Automotivo" OR "Lavador de Veículos" OR "Preparador de Frota")',
+        "Todas as Vagas SPA (Atendimento, Auxiliar, Higienização)": '(Atendimento OR "Auxiliar de Operações" OR "Auxiliar de Pátio" OR Higienização OR Manobrista OR "Higienizador Automotivo")',
     }
-    
-    target_query = job_aliases.get(job_target, f'"{job_target}"')
 
-    # Termos de rotação focados em perfis pessoais/currículos reais na web
-    resume_keywords = [
-        "currículo", "experiência profissional", "resumo profissional", "portfólio", "contato", "sobre mim"
-    ]
-    random_keyword = random.choice(resume_keywords)
+    # Seleciona os termos expandidos ou utiliza a busca direta
+    expanded_terms = variations_map.get(job_target, f'"{job_target}"')
 
-    # Query cirúrgica: Focada em PESSOAS REAIS / CURRÍCULOS, bloqueando páginas de portais corporativos de vagas
+    # Query Boolean Avançada: Portais + Variações + Região + Requisito CNH
     query = (
-        f'{target_query} '
-        f'("{location}") '
-        f'("CNH" OR "Habilitado" OR "Categoria B") '
-        f'("{random_keyword}") '
-        f'(-site:gupy.io -site:vagas.com.br -site:indeed.com -site:catho.com.br -site:linkedin.com/company -site:glassdoor.com.br -intitle:"vaga" -intitle:"oportunidade")'
+        f'(site:linkedin.com/in/ OR site:catho.com.br/profissionais) '
+        f'{expanded_terms} '
+        f'"{location}" '
+        f'("CNH" OR "CNH B" OR "Carteira de Habilitação")'
     )
 
     headers = {
         "X-API-KEY": settings.SERPER_API_KEY,
         "Content-Type": "application/json",
     }
-    
-    # Pede uma margem de segurança maior para filtrar na unha
-    payload = {"q": query, "num": max(num_results + 8, 18)}
+    payload = {"q": query, "num": num_results}
 
     try:
         async with httpx.AsyncClient(timeout=15.0) as client:
             resp = await client.post(url, json=payload, headers=headers)
             resp.raise_for_status()
             data = resp.json()
-            organic_results = data.get("organic", [])
-            
-            # Filtro adicional de segurança no código: descarta resultados que tenham cara de anúncio de vaga corporativa
-            filtered_results = []
-            for item in organic_results:
-                title = item.get("title", "").lower()
-                snippet = item.get("snippet", "").lower()
-                
-                # Se o título for uma vaga genérica de empresa, pula
-                if "vaga para" in title or "oportunidade de emprego na" in title or "trabalhe conosco" in title:
-                    continue
-                    
-                filtered_results.append(item)
-
-            # Embaralha para dar dinamismo
-            random.shuffle(filtered_results)
-            
-            # Se a filtragem estrita deixar a lista menor que o pedido, usa o que tem ou complementa com os orgânicos puros
-            final_pool = filtered_results if len(filtered_results) >= num_results else organic_results
-            random.shuffle(final_pool)
-            
-            return final_pool[:num_results]
-            
+            return data.get("organic", [])
     except Exception as e:
-        raise SearchServiceError(f"Erro na busca de candidatos reais: {str(e)}")
+        raise import logging
+import httpx
+from app.core.config import settings
+
+logger = logging.getLogger("FisgAI.SearchService")
+
+
+class SearchServiceError(Exception):
+    pass
+
+
+async def search_professional_profiles(
+    job_target: str, location: str, num_results: int = 10
+):
+    if not settings.SERPER_API_KEY:
+        logger.error("SERPER_API_KEY não configurada no ambiente.")
+        raise SearchServiceError("SERPER_API_KEY não configurada no .env")
+
+    url = "https://google.serper.dev/search"
+
+    # Mapeamento de variações e sinônimos operacionais da Localiza&co
+    variations_map = {
+        "Atendimento ao Cliente": '("Atendimento ao Cliente" OR "Agente de Atendimento" OR "Recepcionista" OR "Consultor de Atendimento")',
+        "Auxiliar de Operações": '("Auxiliar de Operações" OR "Auxiliar de Pátio" OR "Agente de Pátio" OR "Manobrista" OR "Auxiliar de Logística")',
+        "Agente de Higienização": '("Agente de Higienização" OR "Higienizador Automotivo" OR "Lavador de Veículos" OR "Preparador de Frota")',
+        "Todas as Vagas SPA (Atendimento, Auxiliar, Higienização)": '(Atendimento OR "Auxiliar de Operações" OR "Auxiliar de Pátio" OR Higienização OR Manobrista OR "Higienizador Automotivo")',
+    }
+
+    expanded_terms = variations_map.get(job_target, f'"{job_target}"')
+
+    headers = {
+        "X-API-KEY": settings.SERPER_API_KEY,
+        "Content-Type": "application/json",
+    }
+
+    async with httpx.AsyncClient(timeout=15.0) as client:
+        try:
+            # TENTATIVA 1: Foco estrito no LinkedIn
+            query_linkedin = (
+                f'site:linkedin.com/in/ '
+                f'{expanded_terms} '
+                f'"{location}" '
+                f'("CNH" OR "Habilitado" OR "Motorista")'
+            )
+            payload_linkedin = {
+                "q": query_linkedin,
+                "num": max(num_results + 4, 12),
+                "gl": "br",
+                "hl": "pt-br"
+            }
+
+            logger.info(f"Tentativa 1 - Sourcing LinkedIn | Cargo: {job_target}")
+            resp = await client.post(url, json=payload_linkedin, headers=headers)
+            resp.raise_for_status()
+            data = resp.json()
+            organic = data.get("organic", [])
+
+            if organic and len(organic) > 0:
+                return organic[:num_results]
+
+            # TENTATIVA 2 (FALLBACK INTELIGENTE): Se o LinkedIn vier vazio, busca perfis e currículos reais na web geral
+            logger.warning("LinkedIn retornou vazio para esta query. Ativando fallback de busca ampla na web...")
+            query_fallback = (
+                f'{expanded_terms} '
+                f'"{location}" '
+                f'("CV" OR "Currículo" OR "Experiência" OR "CNH")'
+            )
+            payload_fallback = {
+                "q": query_fallback,
+                "num": max(num_results + 4, 12),
+                "gl": "br",
+                "hl": "pt-br"
+            }
+
+            resp_fb = await client.post(url, json=payload_fallback, headers=headers)
+            resp_fb.raise_for_status()
+            data_fb = resp_fb.json()
+            organic_fb = data_fb.get("organic", [])
+
+            return organic_fb[:num_results]
+
+        except httpx.HTTPStatusError as http_err:
+            logger.error(f"Erro HTTP na API Serper: {http_err.response.status_code} - {http_err.response.text}")
+            raise SearchServiceError(f"Falha na comunicação com o provedor de busca: {http_err.response.status_code}")
+        except Exception as e:
+            logger.exception(f"Erro crítico no search_service: {str(e)}")
+            raise SearchServiceError(f"Erro na busca de perfis via Serper: {str(e)}")(f"Erro na busca expandida Serper: {str(e)}")
