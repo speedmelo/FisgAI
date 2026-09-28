@@ -1,4 +1,113 @@
-<!-- Frontend Script -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Descomplic.AI | Talentos - Localiza&co</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen font-sans flex flex-col justify-between">
+
+    <!-- Header / Navbar -->
+    <header class="border-b border-emerald-500/20 bg-slate-950/80 backdrop-blur-md sticky top-0 z-50 px-6 py-4 flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 rounded-xl bg-emerald-500 flex items-center justify-center font-bold text-slate-950 text-xl shadow-lg shadow-emerald-500/20">
+                ⚡
+            </div>
+            <div>
+                <h1 class="font-bold text-lg tracking-wide flex items-center gap-2">
+                    Descomplic.AI <span class="text-xs font-normal px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Talentos</span>
+                </h1>
+                <p class="text-xs text-slate-400">#VEMSERSANGUEVERDE • Localiza&co</p>
+            </div>
+        </div>
+        <div class="flex items-center space-x-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span class="text-xs font-medium text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">Engine Online</span>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-7xl mx-auto px-6 py-8 flex-grow w-full space-y-8">
+
+        <!-- Search Parameters Card -->
+        <section class="bg-slate-950/60 border border-slate-800 rounded-2xl p-6 shadow-xl backdrop-blur-sm">
+            <h2 class="text-sm font-semibold text-emerald-400 uppercase tracking-wider mb-4 flex items-center gap-2">
+                <span>⚙️</span> Parâmetros de Campanhas & Atração de Talentos
+            </h2>
+            
+            <form id="searchForm" class="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
+                <!-- Vaga SPA Localiza -->
+                <div class="space-y-2">
+                    <label for="jobTarget" class="text-xs font-medium text-slate-300">Vaga SPA Localiza</label>
+                    <select id="jobTarget" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                        <option value="Atendimento ao Cliente">Atendimento ao Cliente</option>
+                        <option value="Auxiliar de Operações">Auxiliar de Operações</option>
+                        <option value="Agente de Higienização">Agente de Higienização</option>
+                        <option value="Todas as Vagas SPA (Atendimento, Auxiliar, Higienização)" selected>Todas as Vagas SPA (Atendimento, Auxiliar, Higienização)</option>
+                    </select>
+                </div>
+
+                <!-- Região -->
+                <div class="space-y-2">
+                    <label for="location" class="text-xs font-medium text-slate-300">Região de Atuação (SP)</label>
+                    <select id="location" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                        <option value="São Paulo - Capital" selected>São Paulo - Capital</option>
+                        <option value="Grande São Paulo - SP">Grande São Paulo - SP</option>
+                        <option value="Guarulhos - SP">Guarulhos - SP</option>
+                    </select>
+                </div>
+
+                <!-- Qtd de Leads / Kits -->
+                <div class="space-y-2">
+                    <label for="numResults" class="text-xs font-medium text-slate-300">Qtd. de Kits de Atração</label>
+                    <select id="numResults" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-emerald-500 transition-colors">
+                        <option value="5">5 Campanhas</option>
+                        <option value="10" selected>10 Campanhas</option>
+                    </select>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="md:col-span-3 flex justify-end pt-2">
+                    <button type="submit" id="submitBtn" class="w-full md:w-auto bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold px-8 py-3.5 rounded-xl transition-all shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2">
+                        <span>🚀</span> Gerar Kits de Atração Ativa
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        <!-- Results Section -->
+        <section class="space-y-4">
+            <div class="flex items-center justify-between">
+                <h3 class="text-lg font-bold text-slate-100 flex items-center gap-2">
+                    <span>📋</span> Kits de Abordagem Direta para a Michele
+                </h3>
+                <span id="resultsCount" class="text-xs font-medium bg-slate-800 text-slate-300 px-3 py-1 rounded-full border border-slate-700">0 gerados</span>
+            </div>
+
+            <!-- Loader State -->
+            <div id="loader" class="hidden flex flex-col items-center justify-center py-16 space-y-4">
+                <div class="w-10 h-10 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
+                <p class="text-sm text-slate-400">Gerando links e campanhas de conversão imediata...</p>
+            </div>
+
+            <!-- Empty State -->
+            <div id="emptyState" class="text-center py-16 bg-slate-950/30 border border-slate-800/60 rounded-2xl">
+                <p class="text-slate-400 text-sm">Nenhum kit gerado nesta sessão. Clique no botão acima para acionar a agente.</p>
+            </div>
+
+            <!-- Cards Grid -->
+            <div id="resultsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800 bg-slate-950 py-4 text-center text-xs text-slate-500">
+        Descomplic.AI • Powered by Melo Strategic AI & Localiza&co
+    </footer>
+
+    <!-- Frontend Script -->
     <script>
         document.getElementById('searchForm').addEventListener('submit', async function(e) {
             e.preventDefault();
@@ -22,7 +131,7 @@
             resultsCount.textContent = 'Processando...';
 
             try {
-                // CHAMA A SUA ROTA EXATA: /run-search
+                // MUDANÇA CRÍTICA: Chama a SUA rota verdadeira que não dá erro 404
                 const response = await fetch('/run-search', {
                     method: 'POST',
                     headers: {
@@ -36,13 +145,13 @@
                 });
 
                 if (!response.ok) {
-                    throw new Error(`Falha ao comunicar com o servidor (Status: ${response.status}).`);
+                    throw new Error('Falha ao comunicar com o servidor da agente. Status: ' + response.status);
                 }
 
                 const data = await response.json();
                 loader.classList.add('hidden');
 
-                // Lê o array de candidates do seu backend
+                // MUDANÇA CRÍTICA: O seu backend devolve a lista dentro de "candidates"
                 if (!data.candidates || data.candidates.length === 0) {
                     emptyState.classList.remove('hidden');
                     resultsCount.textContent = '0 gerados';
@@ -59,14 +168,14 @@
                         <div class="space-y-3">
                             <div class="flex items-center justify-between">
                                 <span class="text-xs font-bold px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                                    SCORE: ${item.score}/10
+                                    CAMPANHA #${index + 1}
                                 </span>
                                 <span class="text-xs text-slate-400 flex items-center gap-1 font-medium">
-                                    <span class="w-2 h-2 rounded-full bg-emerald-400"></span> ${item.cnh_status}
+                                    <span class="w-2 h-2 rounded-full bg-emerald-400"></span> ${item.cnh_status || 'WhatsApp Direto'}
                                 </span>
                             </div>
                             <h4 class="font-bold text-slate-100 text-base group-hover:text-emerald-400 transition-colors line-clamp-2 uppercase">
-                                ${item.name_or_snippet || 'Campanha de Recrutamento Ativo'}
+                                ${item.name_or_snippet || item.title || 'Campanha de Recrutamento'}
                             </h4>
                             <p class="text-xs text-slate-400 line-clamp-3 leading-relaxed">
                                 Vaga: ${item.job_target}<br>
@@ -74,9 +183,9 @@
                             </p>
                         </div>
                         <div class="pt-6 mt-4 border-t border-slate-800/80">
-                            <!-- Link usando o whatsapp_link que o seu backend gera -->
-                            <a href="${item.whatsapp_link}" target="_blank" class="w-full bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold py-2.5 px-4 rounded-xl text-xs flex items-center justify-center gap-2 transition-all shadow-md shadow-emerald-600/20">
-                                <span>💬</span> Enviar Link da Michele
+                            <!-- MUDANÇA CRÍTICA: Botão com o link gerado pelo backend -->
+                            <a href="${item.whatsapp_link || item.link || '#'}" target="_blank" class="w-full bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold py-2.5 px-4 rounded-xl text-xs flex items-center justify-center gap-2 transition-all shadow-md shadow-emerald-600/20">
+                                <span>💬</span> Disparar / Chamar Michele
                             </a>
                         </div>
                     `;
@@ -94,3 +203,5 @@
             }
         });
     </script>
+</body>
+</html>
