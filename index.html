@@ -164,29 +164,32 @@
                     const card = document.createElement('div');
                     card.className = 'bg-slate-950/80 border border-slate-800/80 rounded-2xl p-6 flex flex-col justify-between shadow-lg hover:border-emerald-500/50 transition-all group';
                     
+                    // Texto persuasivo para a campanha com link pro Whats da Michele
+                    const textCampanha = `🚨 *Oportunidade Localiza&co: ${item.job_target}* em *${item.location}*! 🚘💚\n\n✅ Requisito: ${item.cnh_status || 'CNH Obrigatória'}\n\nEstamos com vagas abertas para início imediato. Quer participar da seleção?\n\n👉 *Fale direto com nosso RH clicando no link abaixo e agende sua entrevista agora:*\n${item.whatsapp_link || item.link}`;
+
                     card.innerHTML = `
                         <div class="space-y-3">
                             <div class="flex items-center justify-between">
                                 <span class="text-xs font-bold px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                                    CAMPANHA #${index + 1}
+                                    🎯 CAMPANHA DIRECIONADA
                                 </span>
                                 <span class="text-xs text-slate-400 flex items-center gap-1 font-medium">
-                                    <span class="w-2 h-2 rounded-full bg-emerald-400"></span> ${item.cnh_status || 'WhatsApp Direto'}
+                                    <span class="w-2 h-2 rounded-full bg-emerald-400"></span> ${item.cnh_status || 'CNH Obrigatória'}
                                 </span>
                             </div>
                             <h4 class="font-bold text-slate-100 text-base group-hover:text-emerald-400 transition-colors line-clamp-2 uppercase">
-                                ${item.name_or_snippet || item.title || 'Campanha de Recrutamento'}
+                                Campanha: ${item.job_target || item.name_or_snippet}
                             </h4>
                             <p class="text-xs text-slate-400 line-clamp-3 leading-relaxed">
-                                Vaga: ${item.job_target}<br>
-                                Local: ${item.location}
+                                📍 Foco: ${item.location}<br>
+                                🎯 Ação: Link de WhatsApp embutido
                             </p>
                         </div>
                         <div class="pt-6 mt-4 border-t border-slate-800/80">
-                            <!-- MUDANÇA CRÍTICA: Botão com o link gerado pelo backend -->
-                            <a href="${item.whatsapp_link || item.link || '#'}" target="_blank" class="w-full bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold py-2.5 px-4 rounded-xl text-xs flex items-center justify-center gap-2 transition-all shadow-md shadow-emerald-600/20">
-                                <span>💬</span> Disparar / Chamar Michele
-                            </a>
+                            <!-- Botão de Disparo: Copia o texto persuasivo + link para a Michele colar nas redes -->
+                            <button onclick="navigator.clipboard.writeText(\`${textCampanha}\`); alert('Campanha copiada com sucesso! Pronta para colar (CTRL+V) no Facebook, WhatsApp e Grupos!');" class="w-full bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold py-2.5 px-4 rounded-xl text-xs flex items-center justify-center gap-2 transition-all shadow-md shadow-emerald-600/20">
+                                <span>🚀</span> Copiar Campanha para Disparo
+                            </button>
                         </div>
                     `;
                     resultsGrid.appendChild(card);
