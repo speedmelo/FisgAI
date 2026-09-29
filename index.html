@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Descomplic.AI | Talentos - Localiza&co</title>
+    <title>Descomplic.AI | Head Hunter</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-slate-900 text-slate-100 min-h-screen font-sans flex flex-col justify-between">
@@ -11,14 +11,15 @@
     <!-- Header / Navbar -->
     <header class="border-b border-emerald-500/20 bg-slate-950/80 backdrop-blur-md sticky top-0 z-50 px-6 py-4 flex items-center justify-between">
         <div class="flex items-center space-x-3">
-            <div class="w-10 h-10 rounded-xl bg-emerald-500 flex items-center justify-center font-bold text-slate-950 text-xl shadow-lg shadow-emerald-500/20">
-                ⚡
+            <!-- Nova Logo: Ícone Vetorial de Inteligência Artificial -->
+            <div class="w-12 h-12 rounded-xl bg-slate-900 border border-emerald-500/30 flex items-center justify-center overflow-hidden shadow-lg shadow-emerald-500/20">
+                <img src="https://encrypted-tbn3.gstatic.com/licensed-image?q=tbn:ANd9GcQVX7YIpbCU52O6bXlY0Jvq5GomV3P0VIuNVeZWt47SzsXfAlQTHknM1kvReDCHO-b-C8AqaQDL29nbGVw" alt="Logo Melo Strategic AI" class="w-full h-full object-cover">
             </div>
             <div>
                 <h1 class="font-bold text-lg tracking-wide flex items-center gap-2">
-                    Descomplic.AI <span class="text-xs font-normal px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Talentos</span>
+                    Descomplic.AI <span class="text-xs font-normal px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Head Hunter</span>
                 </h1>
-                <p class="text-xs text-slate-400">#VEMSERSANGUEVERDE • Localiza&co</p>
+                <p class="text-xs text-slate-400">Aqui você sempre encontra os melhores • Melo Strategic AI</p>
             </div>
         </div>
         <div class="flex items-center space-x-2">
@@ -171,24 +172,7 @@
                     }
 
                     // TEXTO PERSUASIVO COMPLETO (Baseado na Arte da Localiza)
-                    const textCampanha = `🚨 *VAGAS IMEDIATAS: ${item.job_target}* em *${item.location}*! 🚘💚
-
-Acelere sua carreira com a Localiza! Estamos com contratação rápida para nossa operação. #VEMSERSANGUEVERDE
-
-✅ *REQUISITOS:*
-• CNH DEFINITIVA há, no mínimo, 1 ano (OBRIGATÓRIO)
-${requisitosExtras}
-
-🎁 *EXCELENTES BENEFÍCIOS:*
-• Vale-Transporte e Vale-Alimentação/Refeição
-• Plano de Saúde e Odontológico
-• Gympass (Wellhub)
-• Participação nos Lucros (PLR)
-• Desconto no aluguel e compra de veículos
-
-👉 *CANDIDATE-SE AGORA!*
-Fale direto com nosso RH pelo WhatsApp e inicie seu processo:
-${item.whatsapp_link || item.link}`;
+                    const textCampanha = `🚨 *VAGAS IMEDIATAS: ${item.job_target}* em *${item.location}*! 🚘💚\n\nAcelere sua carreira com a Localiza! Estamos com contratação rápida para nossa operação. #VEMSERSANGUEVERDE\n\n✅ *REQUISITOS:*\n• CNH DEFINITIVA há, no mínimo, 1 ano (OBRIGATÓRIO)\n${requisitosExtras}\n\n🎁 *EXCELENTES BENEFÍCIOS:*\n• Vale-Transporte e Vale-Alimentação/Refeição\n• Plano de Saúde e Odontológico\n• Gympass (Wellhub)\n• Participação nos Lucros (PLR)\n• Desconto no aluguel e compra de veículos\n\n👉 *CANDIDATE-SE AGORA!*\nFale direto com nosso RH pelo WhatsApp e inicie seu processo:\n${item.whatsapp_link || item.link}`;
 
                     card.innerHTML = `
                         <div class="space-y-3">
