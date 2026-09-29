@@ -44,7 +44,7 @@ async def run_search(request: SearchRequest):
         loc_str = str(request.location)
 
         if "Todas" in job_str:
-            query_job = "Atendimento ao Cliente OR Auxiliar de Operações OR Agente de Higienização"
+            query_job = "Atendimento ao Cliente ou Auxiliar de Operações ou Agente de Higienização"
             display_job = "Vagas SPA (Atendimento / Auxiliar / Higienização)"
         else:
             query_job = job_str
