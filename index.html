@@ -11,7 +11,6 @@
     <!-- Header / Navbar -->
     <header class="border-b border-blue-500/20 bg-slate-950/80 backdrop-blur-md sticky top-0 z-50 px-6 py-4 flex items-center justify-between">
         <div class="flex items-center space-x-3">
-            <!-- Logo Vetorial IA - Melo Strategic AI -->
             <div class="w-12 h-12 rounded-xl bg-slate-900 border border-blue-500/30 flex items-center justify-center overflow-hidden shadow-lg shadow-blue-500/20">
                 <img src="https://encrypted-tbn3.gstatic.com/licensed-image?q=tbn:ANd9GcQVX7YIpbCU52O6bXlY0Jvq5GomV3P0VIuNVeZWt47SzsXfAlQTHknM1kvReDCHO-b-C8AqaQDL29nbGVw" alt="Logo Melo Strategic AI" class="w-full h-full object-cover">
             </div>
@@ -28,10 +27,7 @@
         </div>
     </header>
 
-    <!-- Main Container -->
     <main class="max-w-7xl mx-auto px-6 py-8 flex-grow w-full space-y-8">
-
-        <!-- Search Parameters Card -->
         <section class="bg-slate-950/60 border border-slate-800 rounded-2xl p-6 shadow-xl backdrop-blur-sm">
             <h2 class="text-sm font-semibold text-blue-400 uppercase tracking-wider mb-4 flex items-center gap-2">
                 <span>⚙️</span> Parâmetros de Campanhas & Atração de Talentos
@@ -47,7 +43,6 @@
                         <option value="Todas as Vagas SPA (Atendimento, Auxiliar, Higienização)" selected>Todas as Vagas SPA (Atendimento, Auxiliar, Higienização)</option>
                     </select>
                 </div>
-
                 <div class="space-y-2">
                     <label for="location" class="text-xs font-medium text-slate-300">Região de Atuação (SP)</label>
                     <select id="location" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-blue-500 transition-colors">
@@ -56,7 +51,6 @@
                         <option value="Guarulhos - SP">Guarulhos - SP</option>
                     </select>
                 </div>
-
                 <div class="space-y-2">
                     <label for="numResults" class="text-xs font-medium text-slate-300">Qtd. de Kits de Atração</label>
                     <select id="numResults" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-blue-500 transition-colors">
@@ -64,7 +58,6 @@
                         <option value="10" selected>10 Campanhas</option>
                     </select>
                 </div>
-
                 <div class="md:col-span-3 flex justify-end pt-2">
                     <button type="submit" id="submitBtn" class="w-full md:w-auto bg-blue-600 hover:bg-blue-500 text-white font-bold px-8 py-3.5 rounded-xl transition-all shadow-lg shadow-blue-600/20 flex items-center justify-center gap-2">
                         <span>🚀</span> Gerar Kits de Atração Ativa
@@ -73,7 +66,6 @@
             </form>
         </section>
 
-        <!-- Results Section -->
         <section class="space-y-4">
             <div class="flex items-center justify-between">
                 <h3 class="text-lg font-bold text-slate-100 flex items-center gap-2">
@@ -93,7 +85,6 @@
 
             <div id="resultsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
         </section>
-
     </main>
 
     <footer class="border-t border-slate-800 bg-slate-950 py-4 text-center text-xs text-slate-500">
@@ -102,10 +93,21 @@
 
     <!-- Frontend Script -->
     <script>
-        // Função que aciona a nova rota de Disparo Autônomo no Backend
-        async function dispararCampanhaAutonoma(btnElement, textCampanha, jobTarget, location) {
+        // Função de Disparo Omnichannel
+        async function executarDisparoOmnichannel(btnElement, uniqueId, textCampanha, jobTarget, location) {
+            // Puxa quais checkboxes a usuária marcou
+            const canais = [];
+            if(document.getElementById(`fb_${uniqueId}`).checked) canais.push('facebook');
+            if(document.getElementById(`in_${uniqueId}`).checked) canais.push('linkedin');
+            if(document.getElementById(`gy_${uniqueId}`).checked) canais.push('gupy');
+
+            if(canais.length === 0) {
+                alert("Selecione pelo menos uma API de rede (Facebook, LinkedIn ou Gupy) para disparar!");
+                return;
+            }
+
             const originalText = btnElement.innerHTML;
-            btnElement.innerHTML = `<div class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div> Disparando...`;
+            btnElement.innerHTML = `<div class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div> Conectando APIs...`;
             btnElement.disabled = true;
             btnElement.classList.add('opacity-70', 'cursor-not-allowed');
 
@@ -116,25 +118,27 @@
                     body: JSON.stringify({
                         campaign_text: textCampanha,
                         job_target: jobTarget,
-                        location: location
+                        location: location,
+                        channels: canais
                     })
                 });
 
                 if (!response.ok) throw new Error('Falha no servidor');
+                const result = await response.json();
 
                 btnElement.classList.remove('bg-blue-600', 'hover:bg-blue-500');
                 btnElement.classList.add('bg-emerald-500', 'hover:bg-emerald-400', 'text-slate-900');
-                btnElement.innerHTML = `<span>✅</span> Disparo Concluído!`;
+                btnElement.innerHTML = `<span>✅</span> APIs Acionadas!`;
+                console.log(result.message);
 
             } catch (err) {
-                alert('Erro ao realizar disparo autônomo. Verifique a conexão com o servidor.');
+                alert('Erro na integração com as APIs de disparo.');
                 btnElement.innerHTML = originalText;
                 btnElement.disabled = false;
                 btnElement.classList.remove('opacity-70', 'cursor-not-allowed');
             }
         }
 
-        // Função Original de Busca (Permanece Intacta)
         document.getElementById('searchForm').addEventListener('submit', async function(e) {
             e.preventDefault();
 
@@ -166,9 +170,7 @@
                     })
                 });
 
-                if (!response.ok) {
-                    throw new Error('Falha ao comunicar com o servidor. Status: ' + response.status);
-                }
+                if (!response.ok) throw new Error('Falha ao comunicar com o servidor. Status: ' + response.status);
 
                 const data = await response.json();
                 loader.classList.add('hidden');
@@ -195,6 +197,7 @@
                     const textCampanha = `🚨 *VAGAS IMEDIATAS: ${item.job_target}* em *${item.location}*! 🚘💚\n\nAcelere sua carreira com a Localiza! Estamos com contratação rápida para nossa operação. #VEMSERSANGUEVERDE\n\n✅ *REQUISITOS:*\n• CNH DEFINITIVA há, no mínimo, 1 ano (OBRIGATÓRIO)\n${requisitosExtras}\n\n🎁 *EXCELENTES BENEFÍCIOS:*\n• Vale-Transporte e Vale-Alimentação/Refeição\n• Plano de Saúde e Odontológico\n• Gympass (Wellhub)\n• Participação nos Lucros (PLR)\n• Desconto no aluguel e compra de veículos\n\n👉 *CANDIDATE-SE AGORA!*\nFale direto com nosso RH pelo WhatsApp e inicie seu processo:\n${item.whatsapp_link || item.link}`;
                     
                     const safeText = textCampanha.replace(/`/g, '\\`').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+                    const uniqueId = `card_${index}`;
 
                     card.innerHTML = `
                         <div class="space-y-3">
@@ -203,22 +206,40 @@
                                     🎯 CAMPANHA #${index + 1}
                                 </span>
                                 <span class="text-xs text-slate-400 flex items-center gap-1 font-medium">
-                                    <span class="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></span> IA Autônoma
+                                    <span class="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></span> Omnichannel API
                                 </span>
                             </div>
                             <h4 class="font-bold text-slate-100 text-base group-hover:text-blue-400 transition-colors line-clamp-2 uppercase">
                                 ${item.job_target || item.name_or_snippet}
                             </h4>
-                            <p class="text-xs text-slate-400 line-clamp-3 leading-relaxed">
-                                📍 Foco: ${item.location}<br>
-                                🎯 Ação: Disparo WhatsApp API
+                            <p class="text-xs text-slate-400 line-clamp-2 leading-relaxed mb-2">
+                                📍 Foco: ${item.location}
                             </p>
+                            
+                            <!-- SELETORES DE APIS OMNICHANNEL -->
+                            <div class="bg-slate-900/50 p-3 rounded-xl border border-slate-700/50 space-y-2">
+                                <p class="text-[10px] uppercase text-slate-500 font-bold tracking-wider">APIs Disponíveis:</p>
+                                <div class="flex flex-wrap gap-3">
+                                    <label class="flex items-center gap-1.5 text-xs text-slate-300 cursor-pointer hover:text-blue-400 transition-colors">
+                                        <input type="checkbox" id="fb_${uniqueId}" value="facebook" checked class="accent-blue-500 w-3.5 h-3.5 rounded bg-slate-800 border-slate-600">
+                                        Facebook
+                                    </label>
+                                    <label class="flex items-center gap-1.5 text-xs text-slate-300 cursor-pointer hover:text-blue-400 transition-colors">
+                                        <input type="checkbox" id="in_${uniqueId}" value="linkedin" checked class="accent-blue-500 w-3.5 h-3.5 rounded bg-slate-800 border-slate-600">
+                                        LinkedIn
+                                    </label>
+                                    <label class="flex items-center gap-1.5 text-xs text-slate-300 cursor-pointer hover:text-blue-400 transition-colors">
+                                        <input type="checkbox" id="gy_${uniqueId}" value="gupy" class="accent-blue-500 w-3.5 h-3.5 rounded bg-slate-800 border-slate-600">
+                                        Gupy
+                                    </label>
+                                </div>
+                            </div>
                         </div>
-                        <div class="pt-6 mt-4 border-t border-slate-800/80 flex flex-col gap-3">
-                            <button onclick="dispararCampanhaAutonoma(this, \`${safeText}\`, '${item.job_target}', '${item.location}')" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-2.5 px-4 rounded-xl text-xs flex items-center justify-center gap-2 transition-all shadow-md shadow-blue-600/20">
-                                <span>🚀</span> Iniciar Disparo Autônomo
+                        <div class="pt-4 mt-4 border-t border-slate-800/80 flex flex-col gap-3">
+                            <button onclick="executarDisparoOmnichannel(this, '${uniqueId}', \`${safeText}\`, '${item.job_target}', '${item.location}')" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-2.5 px-4 rounded-xl text-xs flex items-center justify-center gap-2 transition-all shadow-md shadow-blue-600/20">
+                                <span>🚀</span> Pulverizar via APIs
                             </button>
-                            <button onclick="navigator.clipboard.writeText(\`${safeText}\`); alert('Copiado para a área de transferência!');" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-2 px-4 rounded-xl text-xs flex items-center justify-center gap-2 transition-all border border-slate-700">
+                            <button onclick="navigator.clipboard.writeText(\`${safeText}\`); alert('Copiado para uso manual!');" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-2 px-4 rounded-xl text-xs flex items-center justify-center gap-2 transition-all border border-slate-700">
                                 <span>📋</span> Copiar Manualmente
                             </button>
                         </div>

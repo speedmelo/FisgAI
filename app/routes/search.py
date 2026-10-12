@@ -128,31 +128,38 @@ async def run_search(request: SearchRequest):
         raise HTTPException(status_code=500, detail=f"Erro interno no motor: {str(e)}")
 
 # ==========================================
-# 3. NOVA ROTA: DISPARO AUTÔNOMO (WHATSAPP)
+# 3. NOVA ROTA: DISPARO OMNICHANNEL ENTERPRISE
 # ==========================================
 class DispatchRequest(BaseModel):
     campaign_text: str
     job_target: str
     location: str
-    target_phone: str = "553130761266"
+    channels: List[str] = ["facebook", "linkedin"]
 
 @router.post("/run-dispatch")
 async def run_dispatch(request: DispatchRequest):
     try:
-        from app.services.whatsapp_service import send_whatsapp_dispatch
+        from app.services.omnichannel_service import OmnichannelDispatcher
         
-        assinatura_bot = "\n\n🤖 *Disparo Autônomo via Melo Strategic AI*"
+        assinatura_bot = "\n\n🚀 *Campanha gerada via Melo Strategic AI | Integração Oficial*"
         texto_final = request.campaign_text + assinatura_bot
         
-        await send_whatsapp_dispatch(
-            phone_number=request.target_phone, 
-            message_text=texto_final
+        if not request.channels:
+            raise HTTPException(status_code=400, detail="Nenhum canal selecionado para disparo.")
+
+        # Dispara para todas as APIs solicitadas (Facebook, LinkedIn, Gupy)
+        redes_sucesso = await OmnichannelDispatcher.execute_dispatch(
+            campaign_text=texto_final,
+            job_target=request.job_target,
+            location=request.location,
+            channels=request.channels
         )
         
-        return {"status": "success", "message": f"Campanha para {request.job_target} enviada ao motor de WhatsApp!"}
+        canais_str = ", ".join(redes_sucesso)
+        return {"status": "success", "message": f"Campanha pulverizada com sucesso nos canais: {canais_str}"}
         
     except Exception as e:
-        print("=== ERRO NO DISPARO AUTÔNOMO ===")
+        print("=== ERRO NO DISPARO OMNICHANNEL ===")
         import traceback
         traceback.print_exc()
-        raise HTTPException(status_code=500, detail=f"Erro ao disparar via WhatsApp: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Erro de integração na API: {str(e)}")
