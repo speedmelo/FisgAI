@@ -8,13 +8,14 @@ from app.services.telegram_service import send_telegram_notification
 
 router = APIRouter(prefix="", tags=["Search"])
 
-
+# ==========================================
+# 1. MODELOS DA ROTA DE BUSCA ORIGINAL
+# ==========================================
 class SearchRequest(BaseModel):
     job_target: Any = Field(..., description="Vaga selecionada")
     location: Any = Field(..., description="Região de atuação")
     cnh_required: Optional[bool] = Field(default=True, description="Requisito CNH")
     max_results: Optional[int] = Field(default=10, description="Volume de leads")
-
 
 class CandidateResult(BaseModel):
     id: int
@@ -27,7 +28,6 @@ class CandidateResult(BaseModel):
     whatsapp_link: str
     status: str
 
-
 class SearchResponse(BaseModel):
     message: str
     qualified: int
@@ -36,7 +36,9 @@ class SearchResponse(BaseModel):
     rejected: int
     candidates: List[CandidateResult]
 
-
+# ==========================================
+# 2. ROTA DE BUSCA (GERA AS CAMPANHAS NO PAINEL)
+# ==========================================
 @router.post("/run-search", response_model=SearchResponse)
 async def run_search(request: SearchRequest):
     try:
@@ -44,7 +46,7 @@ async def run_search(request: SearchRequest):
         loc_str = str(request.location)
 
         if "Todas" in job_str:
-            query_job = "Atendimento ao Cliente ou Auxiliar de Operações ou Agente de Higienização"
+            query_job = "Atendimento ao Cliente OR Auxiliar de Operações OR Agente de Higienização"
             display_job = "Vagas SPA (Atendimento / Auxiliar / Higienização)"
         else:
             query_job = job_str
@@ -52,7 +54,7 @@ async def run_search(request: SearchRequest):
 
         target_count = int(request.max_results or 10)
 
-        # Executa a busca estritamente real na web
+        # Executa a busca real
         try:
             raw_results = await search_professional_profiles(
                 job_target=query_job,
@@ -65,11 +67,8 @@ async def run_search(request: SearchRequest):
 
         candidates = []
         
-        # Processa estritamente os resultados reais retornados pela engine (sem mock/nomes falsos)
         for idx, item in enumerate(raw_results[:target_count], start=1):
             title_raw = item.get("title", f"Oportunidade Real #{idx}")
-            
-            # Limpeza cirúrgica do título tirando ruídos de portais
             clean_name = title_raw.split("-")[0].split("|")[0].strip()
             if not clean_name or len(clean_name) < 3:
                 clean_name = f"Perfil Profissional #{idx}"
@@ -77,7 +76,6 @@ async def run_search(request: SearchRequest):
             link = item.get("link", "#")
             snippet = item.get("snippet", f"Perfil real mapeado para {display_job} em {loc_str}.")
 
-            # --- MOTOR DE MLOPS: Score Dinâmico Baseado no Conteúdo Real ---
             base_score = 8.5
             snippet_lower = snippet.lower()
             if "cnh" in snippet_lower or "habilitado" in snippet_lower or "motorista" in snippet_lower:
@@ -101,7 +99,7 @@ async def run_search(request: SearchRequest):
             )
             candidates.append(candidate_obj)
 
-            # Notificação Telegram real (opcional)
+            # Notificação Telegram real da busca
             try:
                 card_telegram = (
                     f"🚗 <b>FisgAI Engine | Localiza&co SP ({idx})</b>\n"
@@ -128,3 +126,33 @@ async def run_search(request: SearchRequest):
         print("=== ERRO CRÍTICO NO /run-search ===")
         traceback.print_exc()
         raise HTTPException(status_code=500, detail=f"Erro interno no motor: {str(e)}")
+
+# ==========================================
+# 3. NOVA ROTA: DISPARO AUTÔNOMO (WHATSAPP)
+# ==========================================
+class DispatchRequest(BaseModel):
+    campaign_text: str
+    job_target: str
+    location: str
+    target_phone: str = "553130761266"
+
+@router.post("/run-dispatch")
+async def run_dispatch(request: DispatchRequest):
+    try:
+        from app.services.whatsapp_service import send_whatsapp_dispatch
+        
+        assinatura_bot = "\n\n🤖 *Disparo Autônomo via Melo Strategic AI*"
+        texto_final = request.campaign_text + assinatura_bot
+        
+        await send_whatsapp_dispatch(
+            phone_number=request.target_phone, 
+            message_text=texto_final
+        )
+        
+        return {"status": "success", "message": f"Campanha para {request.job_target} enviada ao motor de WhatsApp!"}
+        
+    except Exception as e:
+        print("=== ERRO NO DISPARO AUTÔNOMO ===")
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=f"Erro ao disparar via WhatsApp: {str(e)}")
