@@ -5,3 +5,5 @@ pydantic
 pydantic-settings
 python-dotenv
 google-genai
+SQLAlchemy
+tenacity

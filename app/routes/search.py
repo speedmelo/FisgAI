@@ -1,32 +1,50 @@
-import traceback
+
+import logging
 from typing import List, Optional, Any
+
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
 
-from app.services.search_service import search_professional_profiles
-from app.services.telegram_service import send_telegram_notification
+from app.services.search_service import (
+    SearchServiceError,
+    search_professional_profiles,
+)
 
-router = APIRouter(prefix="", tags=["Search"])
+logger = logging.getLogger(__name__)
 
-# ==========================================
-# 1. MODELOS DA ROTA DE BUSCA ORIGINAL
-# ==========================================
+router = APIRouter(tags=["Search"])
+
+
 class SearchRequest(BaseModel):
-    job_target: Any = Field(..., description="Vaga selecionada")
-    location: Any = Field(..., description="Região de atuação")
-    cnh_required: Optional[bool] = Field(default=True, description="Requisito CNH")
-    max_results: Optional[int] = Field(default=10, description="Volume de leads")
+    job_target: str = Field(
+        ..., min_length=1, description="Vaga desejada"
+    )
+    location: str = Field(
+        ..., min_length=1, description="Região da busca"
+    )
+    cnh_required: Optional[bool] = Field(
+        default=True,
+        description="Indica se a vaga exige CNH; não comprova esse requisito",
+    )
+    max_results: int = Field(default=10, ge=1, le=10)
+
 
 class CandidateResult(BaseModel):
+    # Identificador temporário desta resposta, não é ID do banco.
     id: int
     name_or_snippet: str
+    profile_url: str
     phone: Optional[str] = None
     job_target: str
     location: str
-    cnh_status: str
-    score: float
-    whatsapp_link: str
-    status: str
+    cnh_status: Any = "não confirmado"
+    score: Optional[float] = None
+    whatsapp_link: Optional[str] = None
+    status: str = "pending_review"
+    review_required: bool = True
+    candidate_intent_verified: bool = False
+    qualification_status: str = "not_evaluated"
+
 
 class SearchResponse(BaseModel):
     message: str
@@ -36,130 +54,93 @@ class SearchResponse(BaseModel):
     rejected: int
     candidates: List[CandidateResult]
 
-# ==========================================
-# 2. ROTA DE BUSCA (GERA AS CAMPANHAS NO PAINEL)
-# ==========================================
+
 @router.post("/run-search", response_model=SearchResponse)
 async def run_search(request: SearchRequest):
-    try:
-        job_str = str(request.job_target)
-        loc_str = str(request.location)
+    job_target = request.job_target.strip()
+    location = request.location.strip()
 
-        if "Todas" in job_str:
-            query_job = "Atendimento ao Cliente OR Auxiliar de Operações OR Agente de Higienização"
-            display_job = "Vagas SPA (Atendimento / Auxiliar / Higienização)"
+    if not job_target or not location:
+        raise HTTPException(
+            status_code=422,
+            detail="Informe a vaga e a localização.",
+        )
+
+    try:
+        raw_results = await search_professional_profiles(
+            job_target=job_target,
+            location=location,
+            num_results=request.max_results,
+        )
+    except SearchServiceError as exc:
+        logger.warning("Falha na busca de perfis: %s", exc)
+        raise HTTPException(
+            status_code=502,
+            detail=(
+                "Não foi possível concluir a busca. "
+                "Verifique a configuração do provedor."
+            ),
+        ) from exc
+    except Exception as exc:
+        logger.exception("Erro inesperado em /run-search")
+        raise HTTPException(
+            status_code=500,
+            detail="Erro interno durante a pesquisa.",
+        ) from exc
+
+    candidates = []
+
+    for idx, item in enumerate(raw_results or [], start=1):
+        title = str(item.get("title") or "").strip()
+        profile_url = str(item.get("link") or "").strip()
+
+        if not title or not profile_url.startswith(("https://", "http://")):
+            continue
+
+        qualification = item.get("qualification") or {}
+        requirements = qualification.get("requirements") or {}
+
+        cnh_status = requirements.get(
+            "cnh_definitiva_1_ano",
+            "não confirmado",
+        )
+
+        score = qualification.get("score")
+        if not isinstance(score, (int, float)) or isinstance(score, bool):
+            score = None
         else:
-            query_job = job_str
-            display_job = job_str
+            score = max(0, min(10, float(score)))
 
-        target_count = int(request.max_results or 10)
-
-        # Executa a busca real
-        try:
-            raw_results = await search_professional_profiles(
-                job_target=query_job,
-                location=loc_str,
-                num_results=target_count,
-            )
-        except Exception as search_err:
-            print(f"[AVISO] Falha na busca de sourcing real: {str(search_err)}")
-            raw_results = []
-
-        candidates = []
-        
-        for idx, item in enumerate(raw_results[:target_count], start=1):
-            title_raw = item.get("title", f"Oportunidade Real #{idx}")
-            clean_name = title_raw.split("-")[0].split("|")[0].strip()
-            if not clean_name or len(clean_name) < 3:
-                clean_name = f"Perfil Profissional #{idx}"
-
-            link = item.get("link", "#")
-            snippet = item.get("snippet", f"Perfil real mapeado para {display_job} em {loc_str}.")
-
-            base_score = 8.5
-            snippet_lower = snippet.lower()
-            if "cnh" in snippet_lower or "habilitado" in snippet_lower or "motorista" in snippet_lower:
-                base_score += 0.8
-            if "experiência" in snippet_lower or "atendimento" in snippet_lower or "operacoes" in snippet_lower or "profissional" in snippet_lower:
-                base_score += 0.6
-                
-            score = round(min(base_score + (idx * 0.02), 9.9), 1)
-            cnh_verified = "CNH Definitiva (+1 ano OK)" if request.cnh_required else "Não checado"
-
-            candidate_obj = CandidateResult(
+        candidates.append(
+            CandidateResult(
                 id=idx,
-                name_or_snippet=clean_name,
+                name_or_snippet=title,
+                profile_url=profile_url,
                 phone=None,
-                job_target=display_job,
-                location=loc_str,
-                cnh_status=cnh_verified,
+                job_target=job_target,
+                location=location,
+                cnh_status=cnh_status,
                 score=score,
-                whatsapp_link=link,
-                status="new",
+                whatsapp_link=None,
+                status="pending_review",
+                review_required=True,
+                candidate_intent_verified=False,
+                qualification_status=item.get(
+                    "qualification_status",
+                    "not_evaluated",
+                ),
             )
-            candidates.append(candidate_obj)
-
-            # Notificação Telegram real da busca
-            try:
-                card_telegram = (
-                    f"🚗 <b>FisgAI Engine | Localiza&co SP ({idx})</b>\n"
-                    f"<i>#VEMSERSANGUEVERDE</i> 💚\n\n"
-                    f"🎯 <b>Vaga:</b> {display_job}\n"
-                    f"👤 <b>Lead Real:</b> {clean_name}\n"
-                    f"⭐ <b>Score:</b> {score}/10\n"
-                    f"🔗 <b>Link:</b> {link}"
-                )
-                await send_telegram_notification(card_telegram)
-            except Exception:
-                pass
-
-        return SearchResponse(
-            message=f"Busca real concluída com {len(candidates)} resultado(s) para {loc_str}.",
-            qualified=len(candidates),
-            saved=len(candidates),
-            duplicates=0,
-            rejected=0,
-            candidates=candidates,
         )
 
-    except Exception as e:
-        print("=== ERRO CRÍTICO NO /run-search ===")
-        traceback.print_exc()
-        raise HTTPException(status_code=500, detail=f"Erro interno no motor: {str(e)}")
-
-# ==========================================
-# 3. NOVA ROTA: DISPARO OMNICHANNEL ENTERPRISE
-# ==========================================
-class DispatchRequest(BaseModel):
-    campaign_text: str
-    job_target: str
-    location: str
-    channels: List[str] = ["facebook", "linkedin"]
-
-@router.post("/run-dispatch")
-async def run_dispatch(request: DispatchRequest):
-    try:
-        from app.services.omnichannel_service import OmnichannelDispatcher
-        
-        assinatura_bot = "\n\n🚀 *Campanha gerada via Melo Strategic AI | Integração Oficial*"
-        texto_final = request.campaign_text + assinatura_bot
-        
-        if not request.channels:
-            raise HTTPException(status_code=400, detail="Nenhum canal selecionado para disparo.")
-
-        # Dispara para todas as APIs solicitadas (Facebook, LinkedIn, Gupy)
-        redes_sucesso = await OmnichannelDispatcher.execute_dispatch(
-            campaign_text=texto_final,
-            job_target=request.job_target,
-            location=request.location,
-            channels=request.channels
-        )
-        
-        canais_str = ", ".join(redes_sucesso)
-        return {"status": "success", "message": f"Campanha pulverizada com sucesso nos canais: {canais_str}"}
-        
-    except Exception as e:
-        print("=== ERRO NO DISPARO OMNICHANNEL ===")
-        import traceback
-        traceback.print_exc()
-        raise HTTPException(status_code=500, detail=f"Erro de integração na API: {str(e)}")
+    return SearchResponse(
+        message=(
+            f"{len(candidates)} referência(s) pública(s) encontrada(s). "
+            "Resultados preliminares; exigem revisão humana. "
+            "Nenhum candidato foi salvo no banco ou contatado."
+        ),
+        qualified=0,
+        saved=0,
+        duplicates=0,
+        rejected=0,
+        candidates=candidates,
+    )

@@ -1,4 +1,6 @@
+
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
 
 class Settings(BaseSettings):
     APP_NAME: str = "Melo Strategic AI"
@@ -8,11 +10,17 @@ class Settings(BaseSettings):
 
     SERPER_API_KEY: str = ""
     AI_API_KEY: str = ""
-    AI_API_URL: str = "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions"
+    AI_API_URL: str = (
+        "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions"
+    )
     AI_MODEL: str = "gemini-1.5-flash"
 
     TELEGRAM_BOT_TOKEN: str = ""
     TELEGRAM_CHAT_ID: str = ""
+
+    WHATSAPP_API_URL: str = ""
+    WHATSAPP_TOKEN: str = ""
+    WHATSAPP_INSTANCE: str = ""
 
     model_config = SettingsConfigDict(
         env_file=".env",
@@ -20,5 +28,6 @@ class Settings(BaseSettings):
         case_sensitive=True,
         extra="ignore",
     )
+
 
 settings = Settings()

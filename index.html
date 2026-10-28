@@ -1,260 +1,175 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Descomplic.AI | Head Hunter</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#14834b">
+  <title>FisgAI | Recrutamento inteligente</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='15' fill='%2314834b'/%3E%3Cpath d='M16 14h34v9H26v7h20v9H26v12H16z' fill='%23fff'/%3E%3Ccircle cx='48' cy='48' r='9' fill='%23ffd43b'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+  <style>
+    :root{--green:#14834b;--green-dark:#0d6237;--green-soft:#e9f6ee;--yellow:#ffd43b;--ink:#17251d;--muted:#718078;--line:#e3eae5;--paper:#f5f8f6;--white:#fff;--red:#c64747;--amber:#986b00;--shadow:0 8px 28px rgba(21,55,35,.06)}
+    *{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font-family:'DM Sans',sans-serif;font-size:14px}button,input,select,textarea{font:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #ffd43b;outline-offset:2px}.app{min-height:100vh;display:grid;grid-template-columns:238px minmax(0,1fr)}
+    .sidebar{background:#fff;border-right:1px solid var(--line);padding:24px 15px;display:flex;flex-direction:column;gap:24px}.brand{display:flex;align-items:center;gap:10px;padding:0 8px}.brand-mark{width:39px;height:39px;border-radius:12px;background:var(--green);display:grid;place-items:center;color:#fff;font-family:Manrope,sans-serif;font-weight:800;font-size:23px;position:relative}.brand-mark:after{content:'';width:9px;height:9px;background:var(--yellow);border-radius:50%;position:absolute;right:4px;bottom:4px;border:2px solid var(--green)}.brand-name{font-family:Manrope,sans-serif;font-size:19px;font-weight:800;letter-spacing:-.7px}.brand-sub{font-size:10px;color:var(--muted);letter-spacing:1.6px;text-transform:uppercase;margin-top:2px}.nav-label{font-size:10px;font-weight:700;letter-spacing:1.3px;color:#9aa69f;padding:0 12px 8px;text-transform:uppercase}.nav{display:grid;gap:5px}.nav button{border:0;background:transparent;color:#617168;display:flex;align-items:center;gap:12px;padding:12px;border-radius:10px;text-align:left;font-weight:600;width:100%;transition:.15s}.nav button:hover{background:#f4f8f5;color:var(--green)}.nav button.active{background:var(--green-soft);color:var(--green)}.nav .ico{width:20px;text-align:center;font-size:17px}.sidebar-bottom{margin-top:auto;border:1px solid var(--line);background:#f9fbf9;padding:13px;border-radius:12px}.api-status{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:700}.dot{width:8px;height:8px;border-radius:50%;background:#a5b0a9;display:inline-block}.dot.ok{background:#1e9c5a}.dot.bad{background:#d25a5a}.sidebar-bottom p{font-size:11px;color:var(--muted);line-height:1.5;margin:8px 0 10px}.text-button{border:0;background:none;color:var(--green);padding:0;font-size:12px;font-weight:700}
+    .main{min-width:0}.topbar{height:76px;background:rgba(255,255,255,.9);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 32px;gap:20px;position:sticky;top:0;z-index:500}.crumb{font-size:12px;color:var(--muted)}.crumb strong{color:var(--ink)}.top-actions{display:flex;align-items:center;gap:12px}.today{font-size:12px;color:var(--muted)}.avatar{width:36px;height:36px;border-radius:50%;background:#e5f4e9;color:var(--green-dark);display:grid;place-items:center;font-weight:800}.content{max-width:1500px;margin:0 auto;padding:30px 32px 48px}.page{display:none}.page.active{display:block}.page-head{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:24px}.eyebrow{font-size:11px;font-weight:800;color:var(--green);text-transform:uppercase;letter-spacing:1.4px;margin-bottom:8px}.page h1{font-family:Manrope,sans-serif;font-size:clamp(24px,3vw,32px);letter-spacing:-1.1px;margin:0;font-weight:800}.page-head p{color:var(--muted);margin:8px 0 0;line-height:1.55}.btn{border:1px solid var(--line);border-radius:9px;padding:10px 14px;background:#fff;color:var(--ink);font-weight:700;display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:.15s}.btn:hover{transform:translateY(-1px);box-shadow:var(--shadow)}.btn-primary{background:var(--green);border-color:var(--green);color:#fff}.btn-primary:hover{background:var(--green-dark)}.btn-small{font-size:12px;padding:8px 11px}.btn-yellow{background:var(--yellow);border-color:var(--yellow);color:#26351f}.btn-danger{color:var(--red)}.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:22px}.stat{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px;min-width:0}.stat-top{display:flex;justify-content:space-between;align-items:center;gap:8px;color:var(--muted);font-size:12px;font-weight:600}.stat-icon{width:32px;height:32px;display:grid;place-items:center;background:#f1f7f2;border-radius:9px;font-size:16px}.stat-value{font-family:Manrope,sans-serif;font-size:30px;font-weight:800;letter-spacing:-1px;margin:13px 0 4px}.stat-note{font-size:11px;color:var(--muted)}.grid-main{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(270px,1fr);gap:18px}.panel{background:#fff;border:1px solid var(--line);border-radius:14px;min-width:0;overflow:hidden}.panel-head{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:18px 20px;border-bottom:1px solid #edf1ee}.panel-head h2{font-family:Manrope,sans-serif;font-size:15px;margin:0;font-weight:800}.panel-head p{font-size:11px;color:var(--muted);margin:5px 0 0}.panel-body{padding:18px 20px}.empty{padding:30px 18px;text-align:center;color:var(--muted)}.empty-symbol{width:46px;height:46px;border-radius:14px;background:var(--green-soft);color:var(--green);display:grid;place-items:center;font-size:21px;margin:0 auto 12px}.empty h3{color:var(--ink);font-size:14px;margin:0 0 7px}.empty p{font-size:12px;line-height:1.6;max-width:330px;margin:0 auto 15px}.pipeline{display:grid;grid-template-columns:repeat(5,minmax(100px,1fr));gap:10px;overflow-x:auto}.stage{background:#f8faf8;border:1px solid var(--line);border-radius:10px;padding:12px;min-height:120px}.stage-top{font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:space-between;gap:5px}.stage-count{color:var(--muted);background:#e9efeb;border-radius:6px;padding:2px 6px}.stage-desc{font-size:10px;color:var(--muted);margin-top:8px;line-height:1.45}.quick-actions{display:grid;gap:10px}.quick-action{border:1px solid var(--line);border-radius:11px;padding:13px;display:flex;align-items:center;gap:12px;background:#fff;text-align:left;width:100%}.quick-action:hover{border-color:#9bc9aa;background:#fbfefb}.qa-icon{width:38px;height:38px;border-radius:10px;background:var(--green-soft);display:grid;place-items:center;font-size:17px;flex-shrink:0}.quick-action strong{display:block;font-size:12px}.quick-action small{display:block;font-size:11px;color:var(--muted);margin-top:4px;line-height:1.4}.quick-action .arrow{margin-left:auto;color:var(--muted)}
+    .search-layout{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:18px;align-items:start}.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.field{display:grid;gap:6px}.field.full{grid-column:1/-1}.field label{font-size:12px;font-weight:700}.field input,.field select,.field textarea{width:100%;border:1px solid #dce5de;border-radius:9px;padding:11px 12px;background:#fff;color:var(--ink);min-width:0}.field input::placeholder,.field textarea::placeholder{color:#a0aba4}.field textarea{resize:vertical;min-height:85px}.help{font-size:11px;color:var(--muted);line-height:1.5}.form-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:18px}.notice{padding:12px 14px;background:#fff8df;border:1px solid #f3e5a6;color:#695719;border-radius:10px;font-size:12px;line-height:1.55}.result-list{display:grid;gap:10px}.result-card{border:1px solid var(--line);border-radius:11px;padding:14px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px}.result-title{font-weight:800;font-size:13px;overflow-wrap:anywhere}.result-url{font-size:11px;color:var(--green);display:block;margin-top:5px;overflow-wrap:anywhere}.result-meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}.pill{display:inline-flex;align-items:center;border-radius:6px;padding:4px 7px;font-size:10px;font-weight:700;background:#f0f4f1;color:#66746b}.pill.green{background:#e6f5eb;color:#167141}.pill.yellow{background:#fff5d3;color:#8a6700}.pill.red{background:#fceaea;color:#a63737}.search-results{margin-top:20px}.search-results-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}.search-results-head h2{font-family:Manrope,sans-serif;font-size:16px;margin:0}.small-muted{font-size:11px;color:var(--muted)}
+    .toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:15px}.toolbar input,.toolbar select{border:1px solid #dce5de;border-radius:9px;padding:10px 12px;background:#fff;color:var(--ink)}.toolbar input{flex:1;min-width:180px}.table-wrap{overflow:auto}table{border-collapse:collapse;width:100%;white-space:nowrap}th{text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.8px;color:#87948b;background:#fafcfa;padding:12px 15px;border-bottom:1px solid var(--line)}td{padding:13px 15px;border-bottom:1px solid #edf1ee;font-size:12px}tbody tr:hover{background:#fbfdfb}.person{display:flex;align-items:center;gap:9px}.person-avatar{width:31px;height:31px;border-radius:9px;background:#eaf5ed;color:var(--green);display:grid;place-items:center;font-weight:800}.person-name{font-weight:800}.person-sub{font-size:10px;color:var(--muted);margin-top:3px}.status-select{border:1px solid var(--line);background:#fff;padding:6px 8px;border-radius:7px;font-size:11px}.row-actions{display:flex;gap:5px}.icon-btn{border:1px solid var(--line);background:#fff;border-radius:7px;padding:6px 8px}.icon-btn:hover{border-color:#9bc9aa}.map-layout{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:16px}.map-box{height:470px;background:#e9efeb;border-radius:12px;overflow:hidden;position:relative}.map-fallback{height:100%;display:grid;place-items:center;text-align:center;padding:30px;color:var(--muted);font-size:12px;line-height:1.6}.map-list{display:grid;gap:9px}.map-candidate{padding:12px;border:1px solid var(--line);border-radius:10px}.map-candidate strong{font-size:12px}.map-candidate p{font-size:11px;color:var(--muted);margin:5px 0}.settings-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px}.setting-row{display:flex;justify-content:space-between;gap:12px;padding:13px 0;border-bottom:1px solid #edf1ee;align-items:center}.setting-row:last-child{border-bottom:0}.setting-row strong{font-size:12px}.setting-row small{display:block;color:var(--muted);font-size:11px;margin-top:4px}.switch{display:flex;gap:7px;align-items:center;font-size:11px;color:var(--muted)}.modal-backdrop{position:fixed;inset:0;background:rgba(13,31,20,.48);z-index:1000;display:none;align-items:center;justify-content:center;padding:18px}.modal-backdrop.open{display:flex}.modal{background:#fff;border-radius:16px;width:min(620px,100%);max-height:90vh;overflow:auto;box-shadow:0 24px 80px #10251b40}.modal-head{padding:19px 22px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}.modal-head h2{font-family:Manrope,sans-serif;font-size:17px;margin:0}.modal-body{padding:20px 22px}.modal-foot{padding:16px 22px;border-top:1px solid var(--line);display:flex;justify-content:flex-end;gap:8px}.close{border:0;background:#f1f5f2;border-radius:8px;width:30px;height:30px;font-size:18px}.toast{position:fixed;right:20px;bottom:20px;background:#183b27;color:#fff;padding:13px 16px;border-radius:10px;box-shadow:var(--shadow);z-index:1200;max-width:min(380px,calc(100vw - 40px));font-size:12px;line-height:1.5;display:none}.toast.show{display:block}.footer-note{font-size:10px;color:#96a29a;text-align:center;margin-top:24px;line-height:1.6}.hidden{display:none!important}
+    @media(max-width:1100px){.app{grid-template-columns:205px minmax(0,1fr)}.content{padding:24px 20px}.topbar{padding:0 20px}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.grid-main,.search-layout,.map-layout{grid-template-columns:minmax(0,1fr)}.search-layout aside{order:2}.map-layout aside{order:2}}
+    @media(max-width:760px){.app{grid-template-columns:1fr}.sidebar{position:sticky;top:0;z-index:600;padding:10px 12px;gap:10px;border-right:0;border-bottom:1px solid var(--line)}.brand{padding:0 3px}.brand-mark{width:32px;height:32px;border-radius:9px;font-size:19px}.brand-name{font-size:16px}.brand-sub{font-size:8px}.sidebar .nav-label,.sidebar-bottom{display:none}.nav{display:flex;overflow-x:auto;gap:4px}.nav button{white-space:nowrap;width:auto;padding:9px 10px;font-size:11px;gap:6px}.nav .ico{font-size:14px;width:auto}.topbar{height:52px;padding:0 15px;position:static}.today{display:none}.content{padding:20px 13px 35px}.page-head{flex-direction:column}.page-head>.btn{width:100%}.stats{gap:9px}.stat{padding:13px}.stat-value{font-size:25px}.stat-top{font-size:10px}.stat-note{font-size:10px}.grid-main{gap:12px}.panel-head,.panel-body{padding:15px}.form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}.pipeline{grid-template-columns:repeat(5,120px)}.map-box{height:360px}.settings-grid{grid-template-columns:1fr}.result-card{grid-template-columns:1fr}.result-card>.btn{justify-self:start}}
+  </style>
 </head>
-<body class="bg-slate-900 text-slate-100 min-h-screen font-sans flex flex-col justify-between">
-
-    <!-- Header / Navbar -->
-    <header class="border-b border-blue-500/20 bg-slate-950/80 backdrop-blur-md sticky top-0 z-50 px-6 py-4 flex items-center justify-between">
-        <div class="flex items-center space-x-3">
-            <div class="w-12 h-12 rounded-xl bg-slate-900 border border-blue-500/30 flex items-center justify-center overflow-hidden shadow-lg shadow-blue-500/20">
-                <img src="https://encrypted-tbn3.gstatic.com/licensed-image?q=tbn:ANd9GcQVX7YIpbCU52O6bXlY0Jvq5GomV3P0VIuNVeZWt47SzsXfAlQTHknM1kvReDCHO-b-C8AqaQDL29nbGVw" alt="Logo Melo Strategic AI" class="w-full h-full object-cover">
-            </div>
-            <div>
-                <h1 class="font-bold text-lg tracking-wide flex items-center gap-2">
-                    Descomplic.AI <span class="text-xs font-normal px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20">Head Hunter</span>
-                </h1>
-                <p class="text-xs text-slate-400">Aqui você sempre encontra os melhores • Melo Strategic AI</p>
-            </div>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand"><div class="brand-mark">F</div><div><div class="brand-name">FisgAI</div><div class="brand-sub">Talent intelligence</div></div></div>
+    <div><div class="nav-label">Área de trabalho</div><nav class="nav" aria-label="Navegação principal">
+      <button class="active" data-page="overview"><span class="ico">▦</span>Visão geral</button>
+      <button data-page="search"><span class="ico">⌕</span>Busca ativa</button>
+      <button data-page="talent"><span class="ico">♙</span>Banco de talentos</button>
+      <button data-page="map"><span class="ico">⌖</span>Mapa e distância</button>
+    </nav></div>
+    <div><div class="nav-label">Configuração</div><nav class="nav"><button data-page="settings"><span class="ico">⚙</span>Configurações</button></nav></div>
+    <div class="sidebar-bottom"><div class="api-status"><span id="apiDot" class="dot"></span><span id="apiStatusText">API não testada</span></div><p id="apiStatusHint">Configure o endereço da API para habilitar a busca ativa.</p><button class="text-button" data-page="settings">Configurar conexão →</button></div>
+  </aside>
+  <main class="main">
+    <header class="topbar"><div class="crumb">FisgAI <span style="color:#b5c0b8"> / </span> <strong id="crumbCurrent">Visão geral</strong></div><div class="top-actions"><span class="today" id="todayText"></span><div class="avatar" title="Área da recrutadora">RH</div></div></header>
+    <div class="content">
+      <section class="page active" id="page-overview">
+        <div class="page-head"><div><div class="eyebrow">Painel de recrutamento</div><h1>Bom trabalho. Vamos encontrar talentos.</h1><p>Busque profissionais, organize o banco de talentos e acompanhe cada processo em um só lugar.</p></div><button class="btn btn-primary" data-page="search">＋ Iniciar busca ativa</button></div>
+        <div class="stats">
+          <div class="stat"><div class="stat-top"><span>Banco local</span><span class="stat-icon">♙</span></div><div class="stat-value" id="statTotal">0</div><div class="stat-note">Perfis salvos neste navegador</div></div>
+          <div class="stat"><div class="stat-top"><span>Em contato</span><span class="stat-icon">↗</span></div><div class="stat-value" id="statContact">0</div><div class="stat-note">Status atualizado manualmente</div></div>
+          <div class="stat"><div class="stat-top"><span>Entrevistas</span><span class="stat-icon">▣</span></div><div class="stat-value" id="statInterview">0</div><div class="stat-note">Candidatos nesta etapa</div></div>
+          <div class="stat"><div class="stat-top"><span>Localização confirmada</span><span class="stat-icon">⌖</span></div><div class="stat-value" id="statGeo">0</div><div class="stat-note">Com coordenadas confirmadas</div></div>
         </div>
-        <div class="flex items-center space-x-2">
-            <span class="w-2.5 h-2.5 rounded-full bg-blue-400 animate-pulse"></span>
-            <span class="text-xs font-medium text-blue-400 bg-blue-500/10 px-3 py-1 rounded-full border border-blue-500/20">Engine Online</span>
+        <div class="grid-main">
+          <div class="panel"><div class="panel-head"><div><h2>Pipeline de candidatos</h2><p>Atualizado com os registros salvos neste navegador</p></div><button class="btn btn-small" data-page="talent">Ver banco →</button></div><div class="panel-body"><div class="pipeline" id="pipeline"></div><div id="recentEmpty" class="empty"><div class="empty-symbol">♙</div><h3>Seu banco começa aqui</h3><p>Faça uma busca ativa ou cadastre um candidato com informações verificadas. Não mostramos perfis fictícios.</p><button class="btn btn-primary btn-small" data-page="search">Começar busca</button></div><div id="recentTable" class="hidden table-wrap"><table><thead><tr><th>Candidato / referência</th><th>Vaga</th><th>Status</th></tr></thead><tbody id="recentRows"></tbody></table></div></div></div>
+          <div class="panel"><div class="panel-head"><div><h2>Acesso rápido</h2><p>As quatro tarefas mais comuns</p></div></div><div class="panel-body"><div class="quick-actions">
+            <button class="quick-action" data-page="search"><span class="qa-icon">⌕</span><span><strong>Buscar candidatos</strong><small>Pesquisar referências públicas por vaga e região.</small></span><span class="arrow">→</span></button>
+            <button class="quick-action" data-action="add"><span class="qa-icon">＋</span><span><strong>Cadastrar candidato</strong><small>Adicionar uma pessoa com dados revisados.</small></span><span class="arrow">→</span></button>
+            <button class="quick-action" data-page="talent"><span class="qa-icon">♙</span><span><strong>Gerenciar banco de talentos</strong><small>Pesquisar registros e mover entre etapas.</small></span><span class="arrow">→</span></button>
+            <button class="quick-action" data-page="settings"><span class="qa-icon">⚙</span><span><strong>Conectar a API</strong><small>Configurar a URL do nosso FastAPI.</small></span><span class="arrow">→</span></button>
+          </div></div></div>
         </div>
-    </header>
-
-    <main class="max-w-7xl mx-auto px-6 py-8 flex-grow w-full space-y-8">
-        <section class="bg-slate-950/60 border border-slate-800 rounded-2xl p-6 shadow-xl backdrop-blur-sm">
-            <h2 class="text-sm font-semibold text-blue-400 uppercase tracking-wider mb-4 flex items-center gap-2">
-                <span>⚙️</span> Parâmetros de Campanhas & Atração de Talentos
-            </h2>
-            
-            <form id="searchForm" class="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
-                <div class="space-y-2">
-                    <label for="jobTarget" class="text-xs font-medium text-slate-300">Vaga SPA Localiza</label>
-                    <select id="jobTarget" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-blue-500 transition-colors">
-                        <option value="Atendimento ao Cliente">Atendimento ao Cliente</option>
-                        <option value="Auxiliar de Operações">Auxiliar de Operações</option>
-                        <option value="Agente de Higienização">Agente de Higienização</option>
-                        <option value="Todas as Vagas SPA (Atendimento, Auxiliar, Higienização)" selected>Todas as Vagas SPA (Atendimento, Auxiliar, Higienização)</option>
-                    </select>
-                </div>
-                <div class="space-y-2">
-                    <label for="location" class="text-xs font-medium text-slate-300">Região de Atuação (SP)</label>
-                    <select id="location" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-blue-500 transition-colors">
-                        <option value="São Paulo - Capital" selected>São Paulo - Capital</option>
-                        <option value="Grande São Paulo - SP">Grande São Paulo - SP</option>
-                        <option value="Guarulhos - SP">Guarulhos - SP</option>
-                    </select>
-                </div>
-                <!-- VOLUME REFINADO: 1 ou 3 campanhas -->
-                <div class="space-y-2">
-                    <label for="numResults" class="text-xs font-medium text-slate-300">Volume de Campanhas</label>
-                    <select id="numResults" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-blue-500 transition-colors">
-                        <option value="1" selected>1 Campanha Cirúrgica (Foco Principal)</option>
-                        <option value="3">3 Campanhas Segmentadas (Múltiplas Regiões)</option>
-                    </select>
-                </div>
-                <div class="md:col-span-3 flex justify-end pt-2">
-                    <button type="submit" id="submitBtn" class="w-full md:w-auto bg-blue-600 hover:bg-blue-500 text-white font-bold px-8 py-3.5 rounded-xl transition-all shadow-lg shadow-blue-600/20 flex items-center justify-center gap-2">
-                        <span>🚀</span> Gerar Kits de Atração Ativa
-                    </button>
-                </div>
-            </form>
-        </section>
-
-        <section class="space-y-4">
-            <div class="flex items-center justify-between">
-                <h3 class="text-lg font-bold text-slate-100 flex items-center gap-2">
-                    <span>📋</span> Kits de Abordagem Direta para a Michele
-                </h3>
-                <span id="resultsCount" class="text-xs font-medium bg-slate-800 text-slate-300 px-3 py-1 rounded-full border border-slate-700">0 gerados</span>
-            </div>
-
-            <div id="loader" class="hidden flex flex-col items-center justify-center py-16 space-y-4">
-                <div class="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-                <p class="text-sm text-slate-400">Gerando links e campanhas de conversão imediata...</p>
-            </div>
-
-            <div id="emptyState" class="text-center py-16 bg-slate-950/30 border border-slate-800/60 rounded-2xl">
-                <p class="text-slate-400 text-sm">Nenhum kit gerado nesta sessão. Clique no botão acima para acionar a agente.</p>
-            </div>
-
-            <div id="resultsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
-        </section>
-    </main>
-
-    <footer class="border-t border-slate-800 bg-slate-950 py-4 text-center text-xs text-slate-500">
-        Descomplic.AI • Powered by Melo Strategic AI & Localiza&co
-    </footer>
-
-    <!-- Frontend Script -->
-    <script>
-        async function executarDisparoOmnichannel(btnElement, uniqueId, textCampanha, jobTarget, location) {
-            const canais = [];
-            if(document.getElementById(`fb_${uniqueId}`).checked) canais.push('facebook');
-            if(document.getElementById(`in_${uniqueId}`).checked) canais.push('linkedin');
-            if(document.getElementById(`gy_${uniqueId}`).checked) canais.push('gupy');
-
-            if(canais.length === 0) {
-                alert("Selecione pelo menos uma API de rede (Facebook, LinkedIn ou Gupy) para disparar!");
-                return;
-            }
-
-            const originalText = btnElement.innerHTML;
-            btnElement.innerHTML = `<div class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div> Conectando APIs...`;
-            btnElement.disabled = true;
-            btnElement.classList.add('opacity-70', 'cursor-not-allowed');
-
-            try {
-                const response = await fetch('/run-dispatch', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        campaign_text: textCampanha,
-                        job_target: jobTarget,
-                        location: location,
-                        channels: canais
-                    })
-                });
-
-                if (!response.ok) throw new Error('Falha no servidor');
-                const result = await response.json();
-
-                btnElement.classList.remove('bg-blue-600', 'hover:bg-blue-500');
-                btnElement.classList.add('bg-emerald-500', 'hover:bg-emerald-400', 'text-slate-900');
-                btnElement.innerHTML = `<span>✅</span> APIs Acionadas!`;
-                console.log(result.message);
-
-            } catch (err) {
-                alert('Erro na integração com as APIs de disparo.');
-                btnElement.innerHTML = originalText;
-                btnElement.disabled = false;
-                btnElement.classList.remove('opacity-70', 'cursor-not-allowed');
-            }
-        }
-
-        document.getElementById('searchForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-
-            const jobTarget = document.getElementById('jobTarget').value;
-            const location = document.getElementById('location').value;
-            const numResults = document.getElementById('numResults').value;
-
-            const submitBtn = document.getElementById('submitBtn');
-            const loader = document.getElementById('loader');
-            const emptyState = document.getElementById('emptyState');
-            const resultsGrid = document.getElementById('resultsGrid');
-            const resultsCount = document.getElementById('resultsCount');
-
-            submitBtn.disabled = true;
-            submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
-            loader.classList.remove('hidden');
-            emptyState.classList.add('hidden');
-            resultsGrid.innerHTML = '';
-            resultsCount.textContent = 'Processando...';
-
-            try {
-                const response = await fetch('/run-search', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        job_target: jobTarget,
-                        location: location,
-                        max_results: parseInt(numResults) 
-                    })
-                });
-
-                if (!response.ok) throw new Error('Falha ao comunicar com o servidor. Status: ' + response.status);
-
-                const data = await response.json();
-                loader.classList.add('hidden');
-
-                if (!data.candidates || data.candidates.length === 0) {
-                    emptyState.classList.remove('hidden');
-                    resultsCount.textContent = '0 gerados';
-                    return;
-                }
-
-                resultsCount.textContent = `${data.candidates.length} gerado(s)`;
-
-                data.candidates.forEach((item, index) => {
-                    const card = document.createElement('div');
-                    card.className = 'bg-slate-950/80 border border-slate-800/80 rounded-2xl p-6 flex flex-col justify-between shadow-lg hover:border-blue-500/50 transition-all group';
-                    
-                    let requisitosExtras = "";
-                    const cargoLower = (item.job_target || "").toLowerCase();
-                    if (cargoLower.includes("atendimento")) requisitosExtras = "• Ensino Médio Completo\n• Boa comunicação e foco no cliente";
-                    else if (cargoLower.includes("auxiliar") || cargoLower.includes("operações")) requisitosExtras = "• Ensino Médio Completo\n• Disposição para rotina de pátio e organização";
-                    else if (cargoLower.includes("higienização")) requisitosExtras = "• Capricho e atenção aos detalhes na lavagem da frota";
-                    else requisitosExtras = "• Disposição, energia e vontade de crescer!";
-
-                    const textCampanha = `🚨 *VAGAS IMEDIATAS: ${item.job_target}* em *${item.location}*! 🚘💚\n\nAcelere sua carreira com a Localiza! Estamos com contratação rápida para nossa operação. #VEMSERSANGUEVERDE\n\n✅ *REQUISITOS:*\n• CNH DEFINITIVA há, no mínimo, 1 ano (OBRIGATÓRIO)\n${requisitosExtras}\n\n🎁 *EXCELENTES BENEFÍCIOS:*\n• Vale-Transporte e Vale-Alimentação/Refeição\n• Plano de Saúde e Odontológico\n• Gympass (Wellhub)\n• Participação nos Lucros (PLR)\n• Desconto no aluguel e compra de veículos\n\n👉 *CANDIDATE-SE AGORA!*\nFale direto com nosso RH pelo WhatsApp e inicie seu processo:\n${item.whatsapp_link || item.link}`;
-                    
-                    const safeText = textCampanha.replace(/`/g, '\\`').replace(/'/g, "\\'").replace(/"/g, '&quot;');
-                    const uniqueId = `card_${index}`;
-
-                    card.innerHTML = `
-                        <div class="space-y-3">
-                            <div class="flex items-center justify-between">
-                                <span class="text-xs font-bold px-2.5 py-1 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20">
-                                    🎯 CAMPANHA #${index + 1}
-                                </span>
-                                <span class="text-xs text-slate-400 flex items-center gap-1 font-medium">
-                                    <span class="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></span> Omnichannel API
-                                </span>
-                            </div>
-                            <h4 class="font-bold text-slate-100 text-base group-hover:text-blue-400 transition-colors line-clamp-2 uppercase">
-                                ${item.job_target || item.name_or_snippet}
-                            </h4>
-                            <p class="text-xs text-slate-400 line-clamp-2 leading-relaxed mb-2">
-                                📍 Foco: ${item.location}
-                            </p>
-                            
-                            <div class="bg-slate-900/50 p-3 rounded-xl border border-slate-700/50 space-y-2">
-                                <p class="text-[10px] uppercase text-slate-500 font-bold tracking-wider">APIs Disponíveis:</p>
-                                <div class="flex flex-wrap gap-3">
-                                    <label class="flex items-center gap-1.5 text-xs text-slate-300 cursor-pointer hover:text-blue-400 transition-colors">
-                                        <input type="checkbox" id="fb_${uniqueId}" value="facebook" checked class="accent-blue-500 w-3.5 h-3.5 rounded bg-slate-800 border-slate-600">
-                                        Facebook
-                                    </label>
-                                    <label class="flex items-center gap-1.5 text-xs text-slate-300 cursor-pointer hover:text-blue-400 transition-colors">
-                                        <input type="checkbox" id="in_${uniqueId}" value="linkedin" checked class="accent-blue-500 w-3.5 h-3.5 rounded bg-slate-800 border-slate-600">
-                                        LinkedIn
-                                    </label>
-                                    <label class="flex items-center gap-1.5 text-xs text-slate-300 cursor-pointer hover:text-blue-400 transition-colors">
-                                        <input type="checkbox" id="gy_${uniqueId}" value="gupy" class="accent-blue-500 w-3.5 h-3.5 rounded bg-slate-800 border-slate-600">
-                                        Gupy
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="pt-4 mt-4 border-t border-slate-800/80 flex flex-col gap-3">
-                            <button onclick="executarDisparoOmnichannel(this, '${uniqueId}', \`${safeText}\`, '${item.job_target}', '${item.location}')" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-2.5 px-4 rounded-xl text-xs flex items-center justify-center gap-2 transition-all shadow-md shadow-blue-600/20">
-                                <span>🚀</span> Pulverizar via APIs
-                            </button>
-                            <button onclick="navigator.clipboard.writeText(\`${safeText}\`); alert('Copiado para uso manual!');" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-2 px-4 rounded-xl text-xs flex items-center justify-center gap-2 transition-all border border-slate-700">
-                                <span>📋</span> Copiar Manualmente
-                            </button>
-                        </div>
-                    `;
-                    resultsGrid.appendChild(card);
-                });
-
-            } catch (err) {
-                loader.classList.add('hidden');
-                emptyState.classList.remove('hidden');
-                emptyState.innerHTML = `<p class="text-red-400 text-sm">Erro ao gerar kits: ${err.message}</p>`;
-                resultsCount.textContent = 'Erro';
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
-            }
-        });
-    </script>
+      </section>
+      <section class="page" id="page-search">
+        <div class="page-head"><div><div class="eyebrow">Sourcing assistido por IA</div><h1>Busca ativa</h1><p>Pesquise referências públicas. Cada resultado precisa ser revisado antes de entrar no banco de talentos.</p></div></div>
+        <div class="search-layout"><div>
+          <div class="panel"><div class="panel-head"><div><h2>Defina a busca</h2><p>Informe a vaga e a região que deseja pesquisar.</p></div><span class="pill green">Busca manual</span></div><div class="panel-body">
+            <form id="searchForm"><div class="form-grid">
+              <div class="field"><label for="jobTarget">Vaga desejada *</label><select id="jobTarget" required><option value="" selected disabled>Selecione uma vaga</option><option value="Atendimento ao Cliente">Atendimento ao Cliente</option><option value="Auxiliar de Operações">Auxiliar de Operações</option><option value="Agente de Higienização">Agente de Higienização</option></select></div>
+              <div class="field"><label for="searchLocation">Região / cidade *</label><select id="searchLocation" required><option value="" selected disabled>Selecione uma região</option><option value="São Paulo, SP">São Paulo</option><option value="Guarulhos, SP">Guarulhos</option></select></div>
+              <div class="field"><label for="radius">Raio desejado (km)</label><select id="radius"><option value="3">3 km</option><option value="5">5 km</option><option value="7" selected>7 km</option><option value="10">10 km</option><option value="15">15 km</option><option value="25">25 km</option></select><span class="help">O raio só pode ser aplicado quando houver localização confirmada.</span></div>
+              <div class="field"><label for="maxResults">Máximo de referências</label><select id="maxResults"><option value="5">5 resultados</option><option value="10" selected>10 resultados</option></select></div>
+            </div><div class="form-actions"><button class="btn btn-primary" id="searchSubmit" type="submit">⌕ Pesquisar referências</button><button class="btn" type="reset">Limpar campos</button></div></form>
+          </div></div>
+          <div class="search-results"><div class="search-results-head"><h2>Resultados da busca</h2><span class="small-muted" id="resultCount">Nenhuma busca realizada</span></div><div id="searchResults" class="panel"><div class="empty"><div class="empty-symbol">⌕</div><h3>Pronto para pesquisar</h3><p>Conecte a API nas configurações e selecione uma das três vagas e uma região disponíveis.</p><button class="btn btn-small" data-page="settings">Configurar API</button></div></div></div>
+        </div><aside><div class="panel"><div class="panel-head"><div><h2>Como funciona</h2><p>Fluxo com revisão humana</p></div></div><div class="panel-body"><div class="quick-actions">
+          <div class="quick-action"><span class="qa-icon">1</span><span><strong>Pesquisar</strong><small>A API devolve referências encontradas em fontes públicas.</small></span></div>
+          <div class="quick-action"><span class="qa-icon">2</span><span><strong>Revisar</strong><small>Abra a fonte original e confira se o perfil é pertinente.</small></span></div>
+          <div class="quick-action"><span class="qa-icon">3</span><span><strong>Cadastrar</strong><small>Salve somente após validar as informações necessárias.</small></span></div>
+        </div><div class="notice" style="margin-top:15px">Uma referência pública não comprova que a pessoa esteja procurando emprego, more naquela região ou tenha CNH. Não enviamos mensagens automaticamente.</div></div></div></aside></div>
+      </section>
+      <section class="page" id="page-talent">
+        <div class="page-head"><div><div class="eyebrow">Banco de talentos</div><h1>Candidatos e referências</h1><p>Gerencie perfis cadastrados, fontes, status e autorização de contato.</p></div><button class="btn btn-primary" data-action="add">＋ Cadastrar candidato</button></div>
+        <div class="panel"><div class="panel-head"><div><h2>Todos os registros</h2><p>Os registros são salvos localmente neste navegador; ainda não são persistidos no banco do servidor.</p></div><span class="pill" id="talentCount">0 registros</span></div><div class="panel-body"><div class="toolbar"><input id="talentFilter" placeholder="Buscar por nome, vaga ou região…" aria-label="Buscar no banco de talentos"><select id="statusFilter" aria-label="Filtrar por status"><option value="">Todos os status</option><option>Novo</option><option>Revisar perfil</option><option>Em contato</option><option>Entrevista</option><option>Aprovado</option><option>Reprovado</option><option>Sem interesse</option></select><button class="btn btn-small" id="exportCsv">Exportar CSV</button></div><div id="talentEmpty" class="empty"><div class="empty-symbol">♙</div><h3>Nenhum registro cadastrado</h3><p>Os resultados públicos da busca não entram automaticamente no banco. Revise cada perfil e cadastre apenas os dados que você confirmou.</p><button class="btn btn-primary btn-small" data-action="add">Cadastrar primeiro candidato</button></div><div class="table-wrap hidden" id="talentTableWrap"><table><thead><tr><th>Nome / referência</th><th>Vaga</th><th>Região</th><th>Localização</th><th>Status</th><th>Contato</th><th>Ações</th></tr></thead><tbody id="talentRows"></tbody></table></div></div></div>
+      </section>
+      <section class="page" id="page-map">
+        <div class="page-head"><div><div class="eyebrow">Inteligência geográfica</div><h1>Mapa e distância</h1><p>Exibe somente registros com localização explicitamente confirmada e coordenadas válidas.</p></div><button class="btn" data-page="talent">Gerenciar candidatos</button></div>
+        <div class="map-layout"><div class="panel"><div class="panel-head"><div><h2>Mapa de candidatos</h2><p>Distância em linha reta; não representa tempo de deslocamento.</p></div><span class="pill green" id="mapCount">0 localizações verificadas</span></div><div class="panel-body"><div id="map" class="map-box"><div class="map-fallback">O mapa será exibido quando houver candidatos com coordenadas confirmadas.<br>Não usamos localização inventada.</div></div></div></div><aside class="panel"><div class="panel-head"><div><h2>Biblioteca de unidades Localiza</h2><p><span id="unitLibraryCount">0 unidades</span> · São Paulo e Guarulhos</p></div></div><div class="panel-body"><div class="notice" id="unitLibraryNotice" style="margin-bottom:12px">A biblioteca foi montada com referências públicas. Coordenadas não confirmadas ficam fora do cálculo de proximidade.</div><div class="field" style="margin-bottom:12px"><label for="mapRadius">Raio de busca</label><select id="mapRadius"><option value="3">Até 3 km</option><option value="5">Até 5 km</option><option value="7" selected>Até 7 km</option><option value="10">Até 10 km</option><option value="15">Até 15 km</option><option value="25">Até 25 km</option><option value="0">Sem filtro de raio</option></select></div><div class="map-list" id="unitLibraryList"></div><div style="height:1px;background:var(--line);margin:16px 0"></div><h3 style="font-size:13px;margin:0 0 10px">Candidatos próximos</h3><div class="map-list" id="mapCandidates"><div class="empty" style="padding:18px 0"><p>Nenhuma localização confirmada ainda.</p></div></div><div class="notice" style="margin-top:15px">A unidade mais próxima só será calculada quando as coordenadas exatas da unidade e a localização do candidato estiverem confirmadas. Distância em linha reta, não tempo de deslocamento.</div></div></aside></div>
+      </section>
+      <section class="page" id="page-settings">
+        <div class="page-head"><div><div class="eyebrow">Configuração</div><h1>Conexões e dados</h1><p>Configure a conexão com a API e confira como o protótipo armazena informações.</p></div></div>
+        <div class="settings-grid"><div class="panel"><div class="panel-head"><div><h2>Conexão FastAPI</h2><p>Use o endereço base da API, sem adicionar /run-search.</p></div></div><div class="panel-body"><form id="apiForm"><div class="field"><label for="apiBase">URL base da API</label><input id="apiBase" placeholder="http://127.0.0.1:8000" value="http://127.0.0.1:8000"><span class="help">Localmente, a API costuma usar http://127.0.0.1:8000. Para acesso de outra máquina, o endereço precisa ser acessível por ela.</span></div><div class="form-actions"><button class="btn btn-primary" type="submit">Salvar endereço</button><button class="btn" type="button" id="testApi">Testar conexão</button></div></form><div class="notice" id="apiFeedback" style="margin-top:15px">A conexão ainda não foi testada.</div></div></div>
+          <div class="panel"><div class="panel-head"><div><h2>Armazenamento e privacidade</h2><p>Estado atual deste protótipo</p></div></div><div class="panel-body"><div class="setting-row"><div><strong>Banco de talentos local</strong><small>Registros ficam no armazenamento do navegador atual.</small></div><span class="pill yellow">Local</span></div><div class="setting-row"><div><strong>Persistência no servidor</strong><small>Integração com banco SQL ainda não conectada a este painel.</small></div><span class="pill">Pendente</span></div><div class="setting-row"><div><strong>Envio automático de mensagens</strong><small>Nenhuma mensagem é enviada automaticamente.</small></div><span class="pill green">Desativado</span></div><div class="setting-row"><div><strong>Referências de busca</strong><small>Exigem conferência humana antes do cadastro.</small></div><span class="pill green">Revisão manual</span></div><div class="form-actions"><button class="btn btn-danger btn-small" id="clearLocal">Apagar banco local deste navegador</button></div><p class="help">A exclusão local é irreversível para este navegador. Exporte um CSV antes de apagar, se precisar guardar os registros.</p></div></div>
+        </div><div class="footer-note">FisgAI é um protótipo independente. A identidade visual é inspirada em tons de verde e amarelo; não é um produto oficial da Localiza.</div>
+      </section>
+    </div>
+  </main>
+</div>
+<div class="modal-backdrop" id="candidateModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><div class="modal"><div class="modal-head"><h2 id="modalTitle">Cadastrar candidato</h2><button class="close" id="closeModal" aria-label="Fechar">×</button></div><form id="candidateForm"><div class="modal-body"><input type="hidden" id="editId"><div class="form-grid">
+  <div class="field"><label for="candidateName">Nome / identificação *</label><input id="candidateName" required maxlength="150" placeholder="Nome confirmado ou identificação interna"></div>
+  <div class="field"><label for="candidateJob">Vaga de interesse *</label><input id="candidateJob" required maxlength="150" placeholder="Ex.: Atendente"></div>
+  <div class="field"><label for="candidateLocation">Região confirmada</label><input id="candidateLocation" maxlength="180" placeholder="Cidade / bairro confirmado"></div>
+  <div class="field full"><label for="candidateAddress">Endereço completo do candidato *</label><input id="candidateAddress" required maxlength="250" autocomplete="street-address" placeholder="Rua, número, bairro, cidade - UF"><span class="help">Obrigatório para avaliar a proximidade da vaga. Informe um endereço fornecido ou confirmado pelo candidato.</span></div>
+  <div class="field"><label for="candidateSource">Fonte do perfil</label><input id="candidateSource" type="url" placeholder="https://... (opcional)"></div>
+  <div class="field"><label for="candidatePhone">Telefone (opcional)</label><input id="candidatePhone" type="tel" placeholder="DDD + número"></div>
+  <div class="field"><label for="candidateStatus">Etapa</label><select id="candidateStatus"><option>Novo</option><option>Revisar perfil</option><option>Em contato</option><option>Entrevista</option><option>Aprovado</option><option>Reprovado</option><option>Sem interesse</option></select></div>
+  <div class="field"><label for="candidateLat">Latitude (opcional)</label><input id="candidateLat" type="number" step="any" min="-90" max="90" placeholder="Ex.: coordenada confirmada"></div>
+  <div class="field"><label for="candidateLng">Longitude (opcional)</label><input id="candidateLng" type="number" step="any" min="-180" max="180" placeholder="Ex.: coordenada confirmada"></div>
+  <div class="field full"><label for="candidateNotes">Observações / evidências revisadas</label><textarea id="candidateNotes" maxlength="1500" placeholder="Registre apenas informações relevantes e verificadas."></textarea></div>
+  <div class="field full"><label class="switch"><input id="locationVerified" type="checkbox"> Confirmo que a localização foi verificada com base legítima.</label><label class="switch"><input id="contactAuthorized" type="checkbox"> Confirmo que há autorização/base válida para contato por WhatsApp.</label><span class="help">Marcar uma opção é uma declaração de revisão humana. Não verifica automaticamente a informação nem envia mensagens.</span></div>
+</div></div><div class="modal-foot"><button class="btn" type="button" id="cancelModal">Cancelar</button><button class="btn btn-primary" type="submit">Salvar registro</button></div></form></div></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script>
+(() => {
+  'use strict';
+  const STORAGE_KEY = 'fisgai_talent_v1';
+  const API_KEY = 'fisgai_api_base_v1';
+  const LOCALIZA_UNITS = [{"id":"gru-aeroporto","name":"Localiza — Aeroporto de Guarulhos (GRU)","city":"Guarulhos","address":"SP-019 / Rodovia Hélio Smidt, s/n, Jardim Cumbica, Guarulhos - SP, CEP 07190-100","latitude":null,"longitude":null,"coordinates_status":"pending_validation","address_status":"listed_by_Localiza","source_url":"https://www.localiza.com/brasil/pt-br/rede-de-agencias/cumbica-sp","coordinate_source_url":"","notes":"Endereço confirmado em página oficial; coordenadas exatas do ponto da unidade ainda precisam de validação."},{"id":"gru-macedo","name":"Localiza — Guarulhos Macedo","city":"Guarulhos","address":"Avenida Tiradentes, 1638, Macedo, Guarulhos - SP","latitude":null,"longitude":null,"coordinates_status":"pending_validation","address_status":"listed_by_Localiza","source_url":"https://www.localiza.com/brasil/pt-br/rede-de-agencias/sao-paulo","coordinate_source_url":"","notes":"A unidade aparece na rede oficial; confirmar endereço operacional atual e coordenadas exatas."},{"id":"sp-consolacao","name":"Localiza — Consolação","city":"São Paulo","address":"Rua da Consolação, região central, São Paulo - SP","latitude":null,"longitude":null,"coordinates_status":"pending_validation","address_status":"listed_by_Localiza","source_url":"https://www.localiza.com/brasil/pt-br/rede-de-agencias/sao-paulo","coordinate_source_url":"","notes":"A rede oficial lista a agência Consolação; fontes secundárias divergem no número do endereço. Coordenadas bloqueadas até resolver a divergência."},{"id":"sp-lapa","name":"Localiza — Lapa / Água Branca","city":"São Paulo","address":"Avenida Comendador Martinelli, 342, Água Branca, São Paulo - SP, CEP 05037-170","latitude":null,"longitude":null,"coordinates_status":"pending_validation","address_status":"secondary_source_only","source_url":"https://www.localiza.com/brasil/pt-br/rede-de-agencias/sao-paulo","coordinate_source_url":"","notes":"Nome da unidade aparece na rede oficial; endereço detalhado também consta em fonte pública secundária. Confirmar diretamente com a Localiza."},{"id":"sp-faria-lima","name":"Localiza — Faria Lima","city":"São Paulo","address":"Avenida Brigadeiro Faria Lima, 1448, Jardim Paulistano, São Paulo - SP","latitude":null,"longitude":null,"coordinates_status":"pending_validation","address_status":"listed_by_Localiza","source_url":"https://www.localiza.com/brasil/es-es/red-de-agencias","coordinate_source_url":"","notes":"Endereço consta na rede oficial de agências; coordenadas exatas ainda pendentes."},{"id":"sp-jk","name":"Localiza — Juscelino Kubitschek","city":"São Paulo","address":"Avenida Presidente Juscelino Kubitschek, 251, Vila Nova Conceição, São Paulo - SP, CEP 04543-010","latitude":null,"longitude":null,"coordinates_status":"pending_validation","address_status":"listed_by_Localiza","source_url":"https://www.localiza.com/brasil/es-es/red-de-agencias","coordinate_source_url":"","notes":"Endereço consta na rede oficial; coordenadas exatas ainda pendentes."},{"id":"sp-tatuape","name":"Localiza — Shopping Metrô Tatuapé","city":"São Paulo","address":"Rua Domingos Agostim, 91, Cidade Mãe do Céu, São Paulo - SP","latitude":null,"longitude":null,"coordinates_status":"pending_validation","address_status":"listed_by_Localiza","source_url":"https://www.localiza.com/brasil/pt-br/rede-de-agencias/sao-paulo","coordinate_source_url":"","notes":"Agência listada na rede oficial; coordenadas de CEP encontradas são aproximadas e não serão usadas como coordenada exata da unidade."},{"id":"sp-butanta","name":"Localiza — Shopping Butantã","city":"São Paulo","address":"Avenida Professor Francisco Morato, 2718, Butantã, São Paulo - SP, CEP 05512-300","latitude":null,"longitude":null,"coordinates_status":"pending_validation","address_status":"listed_by_Localiza","source_url":"https://www.localiza.com/brasil/es-es/red-de-agencias","coordinate_source_url":"","notes":"Endereço consta na rede oficial; coordenadas exatas ainda pendentes."},{"id":"sp-campo-belo","name":"Localiza — Otávio Tarquínio / Campo Belo","city":"São Paulo","address":"Rua Otávio Tarquínio de Sousa, região de Campo Belo, São Paulo - SP","latitude":null,"longitude":null,"coordinates_status":"pending_validation","address_status":"listed_by_Localiza","source_url":"https://www.localiza.com/brasil/es-es/red-de-agencias","coordinate_source_url":"","notes":"Agência listada oficialmente; confirmar número/endereço operacional exato antes de geocodificar."}];
+  const statuses = ['Novo','Revisar perfil','Em contato','Entrevista','Aprovado','Reprovado','Sem interesse'];
+  let candidates = loadCandidates();
+  let searchReferences = [];
+  let mapInstance = null;
+  let mapMarkers = [];
+  let toastTimer;
+  const $ = id => document.getElementById(id);
+  const esc = value => String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  function loadCandidates(){try{const data=JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]');return Array.isArray(data)?data:[]}catch{return []}}
+  function saveCandidates(){localStorage.setItem(STORAGE_KEY,JSON.stringify(candidates));renderAll()}
+  function loadApi(){return localStorage.getItem(API_KEY)||'http://127.0.0.1:8000'}
+  function haversine(lat1,lon1,lat2,lon2){const rad=x=>x*Math.PI/180;const dLat=rad(lat2-lat1),dLon=rad(lon2-lon1);const a=Math.sin(dLat/2)**2+Math.cos(rad(lat1))*Math.cos(rad(lat2))*Math.sin(dLon/2)**2;return 6371*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a))}
+  function validUnitCoords(u){return u.coordinates_status==='verified'&&Number.isFinite(Number(u.latitude))&&Number.isFinite(Number(u.longitude))&&Number(u.latitude)>=-90&&Number(u.latitude)<=90&&Number(u.longitude)>=-180&&Number(u.longitude)<=180}
+  function nearestUnitFor(c){if(!validCoords(c))return null;const eligible=LOCALIZA_UNITS.filter(validUnitCoords).map(u=>({...u,distance_km:haversine(Number(c.lat),Number(c.lng),Number(u.latitude),Number(u.longitude))})).sort((a,b)=>a.distance_km-b.distance_km);return eligible[0]||null}
+  function renderUnitLibrary(){const verified=LOCALIZA_UNITS.filter(validUnitCoords).length;$('unitLibraryCount').textContent=`${verified} de ${LOCALIZA_UNITS.length} unidades com coordenadas verificadas`;$('unitLibraryNotice').textContent=verified?`Cálculo habilitado para ${verified} unidade(s) com coordenadas verificadas. As demais não participam da comparação.`:'Endereços de unidades encontrados em fontes públicas, mas ainda não há coordenadas exatas verificadas suficientes. Por segurança, a unidade mais próxima ainda não será afirmada.';$('unitLibraryList').innerHTML=LOCALIZA_UNITS.map(u=>`<div class="map-candidate"><strong>${esc(u.name)}</strong><p>${esc(u.address)}</p><span class="pill ${validUnitCoords(u)?'green':'yellow'}">${validUnitCoords(u)?'Coordenadas verificadas':'Coordenadas pendentes'}</span><p><a href="${esc(u.source_url)}" target="_blank" rel="noopener noreferrer">Fonte do endereço ↗</a></p></div>`).join('')}
+  function saveApi(value){localStorage.setItem(API_KEY,value.replace(/\/+$/,''));$('apiBase').value=loadApi()}
+  function toast(message){const el=$('toast');el.textContent=message;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),3800)}
+  function initials(name){return String(name||'?').split(/\s+/).filter(Boolean).slice(0,2).map(x=>x[0]).join('').toUpperCase()||'?'}
+  function statusClass(status){if(status==='Aprovado')return 'green';if(status==='Reprovado'||status==='Sem interesse')return 'red';if(status==='Entrevista'||status==='Em contato')return 'yellow';return ''}
+  function validCoords(c){return c.location_verified===true&&Number.isFinite(Number(c.lat))&&Number.isFinite(Number(c.lng))&&Number(c.lat)>=-90&&Number(c.lat)<=90&&Number(c.lng)>=-180&&Number(c.lng)<=180&&c.lat!==''&&c.lng!==''}
+  function renderAll(){renderStats();renderPipeline();renderRecent();renderTalent();renderMap();}
+  function renderStats(){$('statTotal').textContent=candidates.length;$('statContact').textContent=candidates.filter(c=>c.status==='Em contato').length;$('statInterview').textContent=candidates.filter(c=>c.status==='Entrevista').length;$('statGeo').textContent=candidates.filter(validCoords).length}
+  function renderPipeline(){const counts=statuses.slice(0,5).map(s=>({s,n:candidates.filter(c=>c.status===s).length}));$('pipeline').innerHTML=counts.map(x=>`<div class="stage"><div class="stage-top"><span>${esc(x.s)}</span><span class="stage-count">${x.n}</span></div><div class="stage-desc">${x.s==='Novo'?'Registros recém-cadastrados':x.s==='Revisar perfil'?'Conferir informações e fonte':x.s==='Em contato'?'Contato realizado manualmente':x.s==='Entrevista'?'Entrevista em andamento':'Decisão registrada'}</div></div>`).join('')}
+  function renderRecent(){const rows=[...candidates].slice(-5).reverse();$('recentEmpty').classList.toggle('hidden',rows.length>0);$('recentTable').classList.toggle('hidden',rows.length===0);$('recentRows').innerHTML=rows.map(c=>`<tr><td><div class="person"><div class="person-avatar">${esc(initials(c.name))}</div><div><div class="person-name">${esc(c.name)}</div><div class="person-sub">${c.location_verified?'Localização confirmada':'Localização não confirmada'}</div></div></div></td><td>${esc(c.job||'—')}</td><td><span class="pill ${statusClass(c.status)}">${esc(c.status)}</span></td></tr>`).join('')}
+  function renderTalent(){const q=$('talentFilter').value.trim().toLowerCase();const status=$('statusFilter').value;const rows=candidates.filter(c=>(!status||c.status===status)&&(!q||[c.name,c.job,c.location,c.address,c.notes,c.source].some(v=>String(v||'').toLowerCase().includes(q))));$('talentCount').textContent=`${rows.length} registro${rows.length===1?'':'s'}`;$('talentEmpty').classList.toggle('hidden',rows.length>0);$('talentTableWrap').classList.toggle('hidden',rows.length===0);$('talentRows').innerHTML=rows.map(c=>`<tr><td><div class="person"><div class="person-avatar">${esc(initials(c.name))}</div><div><div class="person-name">${esc(c.name)}</div><div class="person-sub">${c.source?`<a href="${esc(c.source)}" target="_blank" rel="noopener noreferrer">Abrir fonte ↗</a>`:'Sem fonte informada'}</div></div></div></td><td>${esc(c.job||'—')}</td><td>${esc(c.location||'Não confirmada')}</td><td><span class="pill ${validCoords(c)?'green':'yellow'}">${validCoords(c)?'Confirmada':'Não confirmada'}</span></td><td><select class="status-select" data-status-id="${esc(c.id)}" aria-label="Status de ${esc(c.name)}">${statuses.map(s=>`<option ${c.status===s?'selected':''}>${esc(s)}</option>`).join('')}</select></td><td>${c.contact_authorized&&c.phone?'<span class="pill green">Autorizado</span>':'<span class="pill">Não autorizado</span>'}</td><td><div class="row-actions"><button class="icon-btn" data-edit="${esc(c.id)}" title="Editar">✎</button><button class="icon-btn" data-contact="${esc(c.id)}" title="Preparar contato">↗</button><button class="icon-btn" data-delete="${esc(c.id)}" title="Excluir">×</button></div></td></tr>`).join('')}
+  function renderMap(){
+    const allMapped=candidates.filter(validCoords);
+    const radius=Number($('mapRadius')?.value||7);
+    const verifiedUnits=LOCALIZA_UNITS.filter(validUnitCoords);
+    const mapped=allMapped.filter(c=>{const nearest=nearestUnitFor(c);return radius===0||!nearest||nearest.distance_km<=radius});
+    $('mapCount').textContent=`${mapped.length} de ${allMapped.length} localizações`;
+    renderUnitLibrary();
+    $('mapCandidates').innerHTML=mapped.length?mapped.map(c=>{const nearest=nearestUnitFor(c);const dist=nearest?`${nearest.distance_km.toFixed(1)} km da ${nearest.name.replace('Localiza — ','')}`:'Unidade mais próxima indisponível: coordenadas das unidades pendentes';return `<div class="map-candidate"><strong>${esc(c.name)}</strong><p>${esc(c.job)} · ${esc(c.location||'Região não informada')}</p><span class="pill ${nearest?'green':'yellow'}">${esc(dist)}</span>${nearest?`<p>${nearest.distance_km<=7?'Dentro':'Fora'} do raio inicial de 7 km</p>`:''}</div>`}).join(''):'<div class="empty" style="padding:18px 0"><p>Nenhum candidato com localização confirmada atende ao filtro atual.</p></div>';
+    const mapEl=$('map');if(!window.L){mapEl.innerHTML='<div class="map-fallback">A biblioteca de mapas não carregou. Confira a conexão com a internet.<br>Os registros não foram alterados.</div>';return}
+    if(!mapInstance){mapEl.innerHTML='';mapInstance=L.map(mapEl).setView([-23.55,-46.63],10);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'&copy; OpenStreetMap contributors',maxZoom:19}).addTo(mapInstance)}
+    mapMarkers.forEach(m=>m.remove());mapMarkers=[];
+    verifiedUnits.forEach(u=>{const marker=L.marker([Number(u.latitude),Number(u.longitude)]).addTo(mapInstance).bindPopup(`<strong>${esc(u.name)}</strong><br>${esc(u.address)}<br>Coordenadas verificadas`);mapMarkers.push(marker)});
+    mapped.forEach(c=>{const nearest=nearestUnitFor(c);const marker=L.circleMarker([Number(c.lat),Number(c.lng)],{radius:7,color:'#14834b',fillColor:'#ffd43b',fillOpacity:.95,weight:2}).addTo(mapInstance).bindPopup(`<strong>${esc(c.name)}</strong><br>${esc(c.job)}<br>${esc(c.location||'Localização confirmada')}${nearest?`<br>Unidade mais próxima: ${esc(nearest.name)}<br>${nearest.distance_km.toFixed(1)} km`: '<br>Unidade mais próxima não calculada: coordenadas pendentes'}`);mapMarkers.push(marker)});
+    const pts=[...verifiedUnits.map(u=>[Number(u.latitude),Number(u.longitude)]),...mapped.map(c=>[Number(c.lat),Number(c.lng)])];
+    if(pts.length){mapInstance.fitBounds(L.latLngBounds(pts).pad(.2),{maxZoom:14})}else{mapInstance.setView([-23.55,-46.63],10)}
+    setTimeout(()=>mapInstance.invalidateSize(),100)
+  }
+  function goPage(name){document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===`page-${name}`));document.querySelectorAll('[data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page===name&&b.closest('.nav')));const labels={overview:'Visão geral',search:'Busca ativa',talent:'Banco de talentos',map:'Mapa e distância',settings:'Configurações'};$('crumbCurrent').textContent=labels[name]||'Visão geral';if(name==='map')setTimeout(()=>{if(mapInstance)mapInstance.invalidateSize()},100);}
+  function openModal(candidate=null){$('candidateForm').reset();$('editId').value=candidate?.id||'';$('modalTitle').textContent=candidate?'Editar registro':'Cadastrar candidato';$('candidateName').value=candidate?.name||'';$('candidateJob').value=candidate?.job||$('jobTarget').value||'';$('candidateLocation').value=candidate?.location||$('searchLocation').value||'';$('candidateAddress').value=candidate?.address||'';$('candidateSource').value=candidate?.source||'';$('candidatePhone').value=candidate?.phone||'';$('candidateStatus').value=candidate?.status||'Novo';$('candidateLat').value=candidate?.lat??'';$('candidateLng').value=candidate?.lng??'';$('candidateNotes').value=candidate?.notes||'';$('locationVerified').checked=!!candidate?.location_verified;$('contactAuthorized').checked=!!candidate?.contact_authorized;$('candidateModal').classList.add('open');setTimeout(()=>$('candidateName').focus(),40)}
+  function closeModal(){$('candidateModal').classList.remove('open')}
+  function normalizePhone(raw){let digits=String(raw||'').replace(/\D/g,'');if(digits.startsWith('00'))digits=digits.slice(2);if(digits.length===10||digits.length===11)digits='55'+digits;return digits}
+  function prepareContact(id){const c=candidates.find(x=>x.id===id);if(!c)return;if(!c.contact_authorized){toast('Contato bloqueado: registre a autorização/base válida antes de preparar uma mensagem.');return}const phone=normalizePhone(c.phone);if(!phone||phone.length<12||phone.length>13||!phone.startsWith('55')){toast('Telefone brasileiro válido não cadastrado.');return}if(!confirm(`Abrir WhatsApp para ${c.name}? Uma mensagem será apenas preparada; você deverá revisar e enviar manualmente.`))return;const msg=`Olá${c.name?` ${c.name.split(' ')[0]}`:''}! Meu nome é [seu nome] e faço parte da equipe de recrutamento. Gostaria de saber se você tem interesse em conversar sobre uma oportunidade de ${c.job}. Se não tiver interesse, sem problema.`;window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`,'_blank','noopener,noreferrer')}
+  async function testApi(){const base=($('apiBase').value.trim()||loadApi()).replace(/\/+$/,'');$('apiFeedback').textContent='Testando conexão…';setApiState('checking','Testando API','Consultando o endpoint /health.');try{const response=await fetch(`${base}/health`,{method:'GET'});if(!response.ok)throw new Error(`HTTP ${response.status}`);$('apiFeedback').textContent='API respondeu ao endpoint /health. A conexão básica está funcionando.';setApiState('ok','API respondeu','Conexão básica confirmada.');toast('Conexão com a API confirmada.')}catch(err){$('apiFeedback').textContent=`Não foi possível confirmar /health (${err.message}). Confira se a API está rodando, a URL e o CORS.`;setApiState('bad','API indisponível','Verifique o servidor, a URL e o CORS.');toast('Não foi possível confirmar a conexão com a API.')}}
+  function setApiState(state,title,hint){$('apiDot').className='dot'+(state==='ok'?' ok':state==='bad'?' bad':'');$('apiStatusText').textContent=title;$('apiStatusHint').textContent=hint}
+  function renderSearchResults(items,message){searchReferences=items;$('resultCount').textContent=`${items.length} referência${items.length===1?'':'s'}`;$('searchResults').innerHTML=`<div class="panel-body">${message?`<div class="notice" style="margin-bottom:14px">${esc(message)}</div>`:''}${items.length?`<div class="result-list">${items.map((r,i)=>`<div class="result-card"><div><div class="result-title">${esc(r.name_or_snippet||r.title||'Referência pública')}</div><a class="result-url" href="${esc(r.profile_url||r.link||'#')}" target="_blank" rel="noopener noreferrer">Abrir fonte original ↗</a><div class="result-meta"><span class="pill">Vaga: ${esc(r.job_target||$('jobTarget').value)}</span><span class="pill">Localização não confirmada</span><span class="pill yellow">Revisão necessária</span>${r.score!==null&&r.score!==undefined?`<span class="pill">Score preliminar: ${esc(r.score)}/10</span>`:''}</div></div><button class="btn btn-small" data-review-ref="${i}">Revisar / cadastrar</button></div>`).join('')}</div>`:'<div class="empty"><div class="empty-symbol">⌕</div><h3>Nenhuma referência válida retornada</h3><p>Tente ajustar a vaga ou a região e confira os logs da API.</p></div>'}</div>`}
+  async function runSearch(event){event.preventDefault();const job=$('jobTarget').value.trim(),location=$('searchLocation').value.trim(),base=loadApi(),max=Number($('maxResults').value);if(!job||!location){toast('Informe a vaga e a região.');return}$('searchSubmit').disabled=true;$('searchSubmit').textContent='Pesquisando…';$('searchResults').innerHTML='<div class="empty"><div class="empty-symbol">⌕</div><h3>Buscando referências</h3><p>Aguarde a resposta da API.</p></div>';try{const response=await fetch(`${base}/run-search`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({job_target:job,location,max_results:max})});const data=await response.json().catch(()=>({detail:'Resposta inválida da API.'}));if(!response.ok)throw new Error(data.detail||`HTTP ${response.status}`);renderSearchResults(Array.isArray(data.candidates)?data.candidates:[],data.message||'Resultados preliminares. Revise cada referência.');toast('Busca concluída. Revise as referências antes de cadastrar.')}catch(err){$('searchResults').innerHTML=`<div class="empty"><div class="empty-symbol">!</div><h3>Não foi possível concluir a busca</h3><p>${esc(err.message)}<br>Confira a URL da API e se o backend está ativo.</p><button class="btn btn-small" data-page="settings">Ver configurações</button></div>`;$('resultCount').textContent='Falha na busca';toast('Busca falhou: verifique a API.')}finally{$('searchSubmit').disabled=false;$('searchSubmit').textContent='⌕ Pesquisar referências'}}
+  function reviewReference(index){const r=searchReferences[index];if(!r)return;const url=r.profile_url||r.link||'';if(url&&!/^https?:\/\//i.test(url)){toast('A referência não tem URL HTTP válida.');return}openModal({name:'',job:r.job_target||$('jobTarget').value,location:'',source:url,phone:'',status:'Revisar perfil',notes:`Referência de busca pública. Snippet/título: ${r.name_or_snippet||r.title||''}. Score de IA (se houver): ${r.score??'não informado'}. Revisar fonte e confirmar dados antes de tratar como candidato.`,location_verified:false,contact_authorized:false})}
+  function exportCsv(){if(!candidates.length){toast('Não há registros para exportar.');return}const cols=['name','job','location','address','source','phone','status','lat','lng','location_verified','contact_authorized','notes'];const quote=v=>`"${String(v??'').replace(/"/g,'""')}"`;const lines=[cols.join(';'),...candidates.map(c=>cols.map(k=>quote(c[k])).join(';'))];const blob=new Blob(['\ufeff'+lines.join('\r\n')],{type:'text/csv;charset=utf-8;'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='fisgai-banco-talentos.csv';a.click();URL.revokeObjectURL(url);toast('Exportação CSV iniciada.')}
+  document.addEventListener('click',e=>{const page=e.target.closest('[data-page]');if(page){goPage(page.dataset.page);return}const add=e.target.closest('[data-action="add"]');if(add){openModal();return}const edit=e.target.closest('[data-edit]');if(edit){const c=candidates.find(x=>x.id===edit.dataset.edit);if(c)openModal(c);return}const del=e.target.closest('[data-delete]');if(del){const c=candidates.find(x=>x.id===del.dataset.delete);if(c&&confirm(`Excluir o registro ${c.name}?`)){candidates=candidates.filter(x=>x.id!==c.id);saveCandidates();toast('Registro excluído do armazenamento local.')}return}const contact=e.target.closest('[data-contact]');if(contact){prepareContact(contact.dataset.contact);return}const ref=e.target.closest('[data-review-ref]');if(ref){reviewReference(Number(ref.dataset.reviewRef));return}});
+  $('candidateForm').addEventListener('submit',e=>{e.preventDefault();const id=$('editId').value;const lat=$('candidateLat').value.trim(),lng=$('candidateLng').value.trim();const locationVerified=$('locationVerified').checked;if((lat!==''||lng!=='')&&(!Number.isFinite(Number(lat))||!Number.isFinite(Number(lng))||Number(lat)<-90||Number(lat)>90||Number(lng)<-180||Number(lng)>180)){toast('Latitude ou longitude inválida.');return}if(locationVerified&&(lat===''||lng==='')){toast('Para confirmar a localização, informe latitude e longitude válidas.');return}const source=$('candidateSource').value.trim();if(source&&!/^https?:\/\//i.test(source)){toast('A fonte deve começar com http:// ou https://.');return}const address=$('candidateAddress').value.trim();if(!address){toast('Informe o endereço completo do candidato.');$('candidateAddress').focus();return}const record={id:id||`cand_${Date.now()}_${Math.random().toString(36).slice(2,7)}`,name:$('candidateName').value.trim(),job:$('candidateJob').value.trim(),location:$('candidateLocation').value.trim(),address,source,phone:$('candidatePhone').value.trim(),status:$('candidateStatus').value,lat,lng,location_verified:locationVerified,contact_authorized:$('contactAuthorized').checked,notes:$('candidateNotes').value.trim(),updated_at:new Date().toISOString()};if(!record.name||!record.job){toast('Preencha o nome/identificação e a vaga.');return}if(id){candidates=candidates.map(c=>c.id===id?{...c,...record}:c)}else{candidates.push(record)}saveCandidates();closeModal();toast(id?'Registro atualizado.':'Registro salvo neste navegador.');goPage('talent')});
+  $('closeModal').addEventListener('click',closeModal);$('cancelModal').addEventListener('click',closeModal);$('candidateModal').addEventListener('click',e=>{if(e.target===$('candidateModal'))closeModal()});document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
+  $('searchForm').addEventListener('submit',runSearch);$('apiForm').addEventListener('submit',e=>{e.preventDefault();const raw=$('apiBase').value.trim();if(!/^https?:\/\//i.test(raw)){toast('Informe uma URL começando com http:// ou https://.');return}saveApi(raw);$('apiFeedback').textContent='Endereço da API salvo neste navegador. Teste a conexão para confirmar que está acessível.';setApiState('','API não testada','Endereço salvo; conexão ainda não confirmada.');toast('Endereço da API salvo.')});$('testApi').addEventListener('click',testApi);$('talentFilter').addEventListener('input',renderTalent);$('statusFilter').addEventListener('change',renderTalent);$('exportCsv').addEventListener('click',exportCsv);$('mapRadius').addEventListener('change',renderMap);$('clearLocal').addEventListener('click',()=>{if(confirm('Tem certeza de que deseja apagar todos os registros locais deste navegador? Esta ação não pode ser desfeita.')){candidates=[];saveCandidates();toast('Banco local apagado.')}});
+  $('todayText').textContent=new Intl.DateTimeFormat('pt-BR',{dateStyle:'medium'}).format(new Date());$('apiBase').value=loadApi();renderAll();
+})();
+</script>
 </body>
 </html>

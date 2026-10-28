@@ -3,3 +3,9 @@ venv/
 __pycache__/
 *.pyc
 .vscode/
+*.bak
+waha-sessions/
+app/data/
+auditoria_fisgai.txt
+estrutura.txt
+resultado.txt

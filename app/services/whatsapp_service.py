@@ -1,45 +1,86 @@
+
+import logging
+
 import httpx
+
 from app.core.config import settings
 
+logger = logging.getLogger(__name__)
+
+
 class WhatsAppServiceError(Exception):
-    pass
+    """Erro ao enviar mensagem pela Evolution API."""
 
-async def send_whatsapp_dispatch(phone_number: str, message_text: str) -> bool:
-    """
-    Motor de disparo autônomo via Evolution API (Docker Local / Produção).
-    Lembrete: Gupy integrada no fluxo para notificações automáticas de vagas!
-    """
-    api_url = getattr(settings, "WHATSAPP_API_URL", "http://localhost:8080")
-    token = getattr(settings, "WHATSAPP_TOKEN", "minha_chave_secreta_123")
-    instance_name = getattr(settings, "WHATSAPP_INSTANCE", "instance_descomplicai")
 
-    # Se não houver URL configurada, fazemos fallback para simulação no console
-    if not api_url:
-        print(f"[SIMULAÇÃO DISPARO WHATSAPP] Para: {phone_number} | Msg: {message_text}")
-        return True
+async def send_whatsapp_dispatch(
+    phone_number: str,
+    message_text: str,
+) -> bool:
+    """Envia uma mensagem pela Evolution API."""
 
-    # Formato de payload exigido pela Evolution API v2
+    api_url = str(
+        getattr(settings, "WHATSAPP_API_URL", "") or ""
+    ).strip().rstrip("/")
+
+    token = str(
+        getattr(settings, "WHATSAPP_TOKEN", "") or ""
+    ).strip()
+
+    instance_name = str(
+        getattr(settings, "WHATSAPP_INSTANCE", "") or ""
+    ).strip()
+
+    if not api_url or not token or not instance_name:
+        raise WhatsAppServiceError(
+            "WhatsApp não configurado. Verifique "
+            "WHATSAPP_API_URL, WHATSAPP_TOKEN e WHATSAPP_INSTANCE."
+        )
+
+    phone_number = str(phone_number or "").strip()
+    message_text = str(message_text or "").strip()
+
+    if not phone_number:
+        raise WhatsAppServiceError("Informe o telefone de destino.")
+
+    if not message_text:
+        raise WhatsAppServiceError("A mensagem não pode estar vazia.")
+
     payload = {
         "number": phone_number,
-        "textMessage": {
-            "text": message_text
-        }
+        "text": message_text,
     }
-    
-    # Cabeçalho de autenticação oficial da Evolution API (apikey)
+
     headers = {
         "apikey": token,
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
     }
 
     url = f"{api_url}/message/sendText/{instance_name}"
 
-    async with httpx.AsyncClient(timeout=15.0) as client:
-        try:
-            response = await client.post(url, json=payload, headers=headers)
+    try:
+        async with httpx.AsyncClient(timeout=15.0) as client:
+            response = await client.post(
+                url,
+                json=payload,
+                headers=headers,
+            )
             response.raise_for_status()
-            return True
-        except httpx.HTTPError as e:
-            # Tenta capturar a resposta detalhada da API se disponível
-            error_detail = e.response.text if hasattr(e, 'response') and e.response else str(e)
-            raise WhatsAppServiceError(f"Erro ao disparar mensagem via Evolution API: {error_detail}")
+
+    except httpx.HTTPStatusError as exc:
+        logger.error(
+            "Evolution API retornou HTTP %s.",
+            exc.response.status_code,
+        )
+        raise WhatsAppServiceError(
+            f"Evolution API recusou a solicitação "
+            f"(HTTP {exc.response.status_code})."
+        ) from exc
+
+    except httpx.RequestError as exc:
+        logger.error("Falha de conexão com a Evolution API.")
+        raise WhatsAppServiceError(
+            "Não foi possível conectar à Evolution API. "
+            "Verifique a URL e a disponibilidade do serviço."
+        ) from exc
+
+    return True
